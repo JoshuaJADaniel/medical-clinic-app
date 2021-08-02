@@ -29,22 +29,6 @@ public class DoctorObj implements Doctor {
     }
 
     @Override
-    public List<Long> getAvailabilities(ClinicDao dao, LocalDateTime date) {
-        List<Long> availabilities = new ArrayList<>();
-        for (int i = START_HOUR; i < FINAL_HOUR; i++) {
-            LocalDateTime time = LocalDateTime.of(date.getYear(), date.getMonth(), date.getHour(), 0, 0);
-            availabilities.add(dao.getDateConverter().dateToLong(time));
-        }
-
-        for (int appointmentId : appointments) {
-            Appointment appointment = dao.findAppointmentById(appointmentId);
-            availabilities.remove(appointment.getTime());
-        }
-
-        return availabilities;
-    }
-
-    @Override
     public String getName() {
         return name;
     }
