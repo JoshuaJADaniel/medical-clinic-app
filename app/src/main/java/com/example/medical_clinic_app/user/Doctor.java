@@ -1,9 +1,11 @@
 package com.example.medical_clinic_app.user;
 
+import com.example.medical_clinic_app.services.ClinicDao;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
-public interface Doctor {
-    List<Long> getAvailabilities();
+public interface Doctor extends User {
     List<Integer> getAppointments();
-    void addAppointment(int appointmentId);
+    List<Long> getAvailabilities(ClinicDao dao, LocalDateTime date);
 }
