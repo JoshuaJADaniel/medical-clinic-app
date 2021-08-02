@@ -7,10 +7,6 @@ public class GeneralAppointment implements Appointment{
     String doctor;
 
     public void Appointment(){
-
-        date = 0L;
-        patient = "";
-        doctor = "";
     }
 
     public void Appointment(long date, String patient, String doctor){
