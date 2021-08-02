@@ -40,10 +40,6 @@ public class PatientObj implements Patient{
         this.appointments = appointments;
     }
 
-    @Override
-    public void addAppointment(int appointmentId) {
-        appointments.add(appointmentId);
-    }
 
     @Override
     public String getUsername() {
