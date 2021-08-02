@@ -1,9 +1,5 @@
 package com.example.medical_clinic_app.user;
 
-import com.example.medical_clinic_app.appointment.Appointment;
-import com.example.medical_clinic_app.services.ClinicDao;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -12,10 +8,6 @@ public class DoctorObj implements Doctor {
     private String username;
     private String password;
     private List<Integer> appointments;
-
-    // 9-5 work hours based on 24 hour format
-    private static final int START_HOUR = 9;
-    private static final int FINAL_HOUR = 17;
 
     private DoctorObj() {
 
