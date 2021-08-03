@@ -70,4 +70,15 @@ public class PatientObj implements Patient {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "PatientObj{" +
+                "age=" + age +
+                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", appointments=" + appointments +
+                '}';
+    }
 }

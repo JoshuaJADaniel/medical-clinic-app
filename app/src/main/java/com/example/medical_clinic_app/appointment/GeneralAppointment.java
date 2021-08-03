@@ -44,4 +44,13 @@ public class GeneralAppointment implements Appointment {
     public void setPatient(String patient) {
         this.patient = patient;
     }
+
+    @Override
+    public String toString() {
+        return "GeneralAppointment{" +
+                "date=" + date +
+                ", patient='" + patient + '\'' +
+                ", doctor='" + doctor + '\'' +
+                '}';
+    }
 }

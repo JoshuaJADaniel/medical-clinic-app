@@ -58,4 +58,14 @@ public class DoctorObj implements Doctor {
     public void setAppointments(List<Integer> appointments) {
         this.appointments = appointments;
     }
+
+    @Override
+    public String toString() {
+        return "DoctorObj{" +
+                "name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", appointments=" + appointments +
+                '}';
+    }
 }
