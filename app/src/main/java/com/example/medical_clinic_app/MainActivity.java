@@ -1,37 +1,49 @@
 package com.example.medical_clinic_app;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 
+import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.medical_clinic_app.user.Patient;
+import com.example.medical_clinic_app.user.PatientObj;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
-
-    FirebaseDatabase rootNode;
-    DatabaseReference reference;
-
-    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ClinicFirebaseDao clinic = new ClinicFirebaseDao();
-
         setContentView(R.layout.activity_main);
     }
 
-    public void bookAppointment(View view) {
-        Intent intent = new Intent(this, DisplayDoctors.class);
-        rootNode = FirebaseDatabase.getInstance();
-        reference = rootNode.getReference("doctors");
+    public void login(View view) {
+        Intent intent = new Intent(this, PatientDashboard.class);
 
+        // Login authentication for patient
+        String username = "henderson";
+        String password = "secret_pass";
 
-        startActivity(intent);
+        ClinicDao dao = new ClinicFirebaseDao();
+        dao.getPatientsRef().child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Patient patient = snapshot.getValue(PatientObj.class);
+                Log.i(null, "Retrieved patient from database: " + patient);
+                intent.putExtra(PatientDashboard.KEY_USER, patient);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(null, "Error accessing user");
+            }
+        });
     }
 }
