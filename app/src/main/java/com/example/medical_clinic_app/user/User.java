@@ -1,6 +1,8 @@
 package com.example.medical_clinic_app.user;
 
-public interface User {
+import java.io.Serializable;
+
+public interface User extends Serializable {
     String getUsername();
     void setUsername(String username);
 

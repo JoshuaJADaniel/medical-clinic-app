@@ -1,6 +1,8 @@
 package com.example.medical_clinic_app.appointment;
 
-public interface Appointment {
+import java.io.Serializable;
+
+public interface Appointment extends Serializable {
     long getDate();
     void setDate(long date);
 
