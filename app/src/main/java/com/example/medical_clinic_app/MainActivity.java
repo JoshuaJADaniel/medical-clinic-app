@@ -35,14 +35,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Patient patient = snapshot.getValue(PatientObj.class);
-                Log.i(null, "Retrieved patient from database: " + patient);
-                intent.putExtra(PatientDashboard.KEY_USER, patient);
+                intent.putExtra(PatientDashboard.KEY_PATIENT, patient);
                 startActivity(intent);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(null, "Error accessing user");
+                Log.e(null, error.toString());
             }
         });
     }
