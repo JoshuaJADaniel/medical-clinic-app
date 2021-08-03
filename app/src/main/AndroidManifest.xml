@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Medicalclinicapp">
         <activity
+            android:name=".BookNewAppointment"
+            android:exported="true" />
+        <activity
             android:name=".PatientDashboard"
             android:exported="true" />
         <activity
