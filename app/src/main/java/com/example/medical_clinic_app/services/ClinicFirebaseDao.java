@@ -1,5 +1,7 @@
 package com.example.medical_clinic_app.services;
 
+import com.example.medical_clinic_app.time.DateConverter;
+import com.example.medical_clinic_app.time.UtcDateConverter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,5 +24,10 @@ public class ClinicFirebaseDao implements ClinicDao {
     @Override
     public DatabaseReference getAppointmentsRef() {
         return appointmentsRef;
+    }
+
+    @Override
+    public DateConverter defaultDateConverter() {
+        return new UtcDateConverter();
     }
 }
