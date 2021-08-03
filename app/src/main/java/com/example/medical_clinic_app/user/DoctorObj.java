@@ -1,7 +1,6 @@
 package com.example.medical_clinic_app.user;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class DoctorObj implements Doctor {
     private String name;
@@ -9,7 +8,7 @@ public class DoctorObj implements Doctor {
     private String password;
     private List<Integer> appointments;
 
-    private DoctorObj() {
+    public DoctorObj() {
 
     }
 
@@ -25,6 +24,7 @@ public class DoctorObj implements Doctor {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -34,6 +34,7 @@ public class DoctorObj implements Doctor {
         return username;
     }
 
+    @Override
     public void setUsername(String username) {
         this.username = username;
     }
@@ -43,6 +44,7 @@ public class DoctorObj implements Doctor {
         return password;
     }
 
+    @Override
     public void setPassword(String password) {
         this.password = password;
     }
@@ -52,7 +54,8 @@ public class DoctorObj implements Doctor {
         return appointments;
     }
 
-    public void setAppointments(ArrayList<Integer> appointments) {
+    @Override
+    public void setAppointments(List<Integer> appointments) {
         this.appointments = appointments;
     }
 }
