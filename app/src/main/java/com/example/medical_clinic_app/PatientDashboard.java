@@ -67,9 +67,9 @@ public class PatientDashboard extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     private void setAppointmentsAdapter() {
         adapterRecyclerAppointments = new AdapterRecyclerAppointments(appointmentList);
-
         recyclerAppointments.setAdapter(adapterRecyclerAppointments);
         recyclerAppointments.setItemAnimator(new DefaultItemAnimator());
         recyclerAppointments.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -78,11 +78,13 @@ public class PatientDashboard extends AppCompatActivity {
     private void populateAppointments() {
         ClinicDao dao = new ClinicFirebaseDao();
         DatabaseReference appointmentsRef = dao.getAppointmentsRef();
+        if(patient.getAppointments()==null) return;
         for (int id : patient.getAppointments()) {
             appointmentsRef.child(String.valueOf(id)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Appointment appointment = snapshot.getValue(GeneralAppointment.class);
+
                     if (appointment == null) return;
 
                     DateConverter dateConverter = dao.defaultDateConverter();
