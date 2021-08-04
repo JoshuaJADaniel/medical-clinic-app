@@ -1,22 +1,66 @@
 package com.example.medical_clinic_app.user;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 public class DoctorObj implements Doctor {
     private String name;
+    private String gender;
     private String username;
     private String password;
+    private String specialization;
     private List<Integer> appointments;
+    private boolean isActive;
 
     public DoctorObj() {
 
     }
 
-    public DoctorObj(String name, String username, String password, List<Integer> appointments) {
+    public DoctorObj(String name,
+                     String gender,
+                     String username,
+                     String password,
+                     String specialization,
+                     List<Integer> appointments,
+                     boolean isActive) {
         this.name = name;
+        this.gender = gender;
         this.username = username;
         this.password = password;
+        this.specialization = specialization;
         this.appointments = appointments;
+        this.isActive = isActive;
+    }
+
+    @Override
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    @Override
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    @Override
+    public String getGender() {
+        return gender;
+    }
+
+    @Override
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    @Override
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    @Override
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     @Override
@@ -59,13 +103,17 @@ public class DoctorObj implements Doctor {
         this.appointments = appointments;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "DoctorObj{" +
                 "name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", specialization='" + specialization + '\'' +
                 ", appointments=" + appointments +
+                ", isActive=" + isActive +
                 '}';
     }
 }

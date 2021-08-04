@@ -5,30 +5,50 @@ import java.util.List;
 public class PatientObj implements Patient {
     private int age;
     private String name;
+    private String gender;
     private String username;
     private String password;
+    private long dateOfBirth;
     private List<Integer> appointments;
 
     public PatientObj() {
 
     }
 
-    public PatientObj(String name, String username, String password, int age, List<Integer> appointments) {
+    public PatientObj(int age,
+                      String name,
+                      String gender,
+                      String username,
+                      String password,
+                      long dateOfBirth,
+                      List<Integer> appointments) {
         this.age = age;
         this.name = name;
+        this.gender = gender;
         this.username = username;
         this.password = password;
+        this.dateOfBirth = dateOfBirth;
         this.appointments = appointments;
     }
 
     @Override
-    public int getAge() {
-        return age;
+    public long getDateOfBirth() {
+        return dateOfBirth;
     }
 
     @Override
-    public void setAge(int age) {
-        this.age = age;
+    public void setDateOfBirth(long dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    @Override
+    public String getGender() {
+        return gender;
+    }
+
+    @Override
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     @Override
@@ -76,8 +96,10 @@ public class PatientObj implements Patient {
         return "PatientObj{" +
                 "age=" + age +
                 ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
                 ", appointments=" + appointments +
                 '}';
     }
