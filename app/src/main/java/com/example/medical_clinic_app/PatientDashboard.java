@@ -78,7 +78,7 @@ public class PatientDashboard extends AppCompatActivity {
     private void populateAppointments() {
         ClinicDao dao = new ClinicFirebaseDao();
         DatabaseReference appointmentsRef = dao.getAppointmentsRef();
-        if(patient.getAppointments()==null) return;
+        if(patient.getAppointments()==null) return; // prevent crash when no appointments
         for (int id : patient.getAppointments()) {
             appointmentsRef.child(String.valueOf(id)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
