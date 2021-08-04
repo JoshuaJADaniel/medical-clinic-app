@@ -1,5 +1,7 @@
 package com.example.medical_clinic_app;
 
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,8 +22,11 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
+        public MyViewHolder(final View view) {
+            super(view);
+            nameTxt = view.findViewById(R.id.textView3); // Patient
+
+
         }
     }
 
@@ -29,11 +34,17 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
     @NonNull
     @Override
     public recyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_items, parent, false);
+
+        return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull recyclerAdapter.MyViewHolder holder, int position) {
+        String patient = appList.get(position).getPatient();
+        String doctor = appList.get(position).getDoctor();
+
+
 
     }
 
