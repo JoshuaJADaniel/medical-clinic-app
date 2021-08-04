@@ -80,6 +80,7 @@ public class PatientDashboard extends AppCompatActivity {
         DatabaseReference appointmentsRef = dao.getAppointmentsRef();
         if(patient.getAppointments()==null) return; // prevent crash when no appointments
         for (int id : patient.getAppointments()) {
+
             appointmentsRef.child(String.valueOf(id)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -94,7 +95,6 @@ public class PatientDashboard extends AppCompatActivity {
                     if (date.isBefore(now)) {
                         txtEmptyRecycler.setVisibility(View.INVISIBLE);
                         linearAppointmentsHeader.setVisibility(View.VISIBLE);
-
                         appointmentList.add(appointment);
                         adapterRecyclerAppointments.notifyItemInserted(appointmentList.size() - 1);
                     }
