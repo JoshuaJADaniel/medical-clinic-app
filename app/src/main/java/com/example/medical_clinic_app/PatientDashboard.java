@@ -20,7 +20,6 @@ import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
 import com.example.medical_clinic_app.user.Patient;
-import com.example.medical_clinic_app.user.PatientObj;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PatientDashboard extends AppCompatActivity {
     public static final String KEY_PATIENT = "key_patient";
@@ -77,19 +77,16 @@ public class PatientDashboard extends AppCompatActivity {
 
     private void populateAppointments() {
         ClinicDao dao = new ClinicFirebaseDao();
+        DateConverter dateConverter = dao.defaultDateConverter();
         DatabaseReference appointmentsRef = dao.getAppointmentsRef();
-        if(patient.getAppointments()==null) return; // prevent crash when no appointments
-        for (int id : patient.getAppointments()) {
+        if (patient.getAppointments() == null) return;
 
+        for (int id : patient.getAppointments()) {
             appointmentsRef.child(String.valueOf(id)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Appointment appointment = snapshot.getValue(GeneralAppointment.class);
-
-                    if (appointment == null) return;
-
-                    DateConverter dateConverter = dao.defaultDateConverter();
-                    LocalDateTime date = dateConverter.longToDate(appointment.getDate());
+                    LocalDateTime date = dateConverter.longToDate(Objects.requireNonNull(appointment).getDate());
                     LocalDateTime now = LocalDateTime.now();
 
                     if (date.isBefore(now)) {
