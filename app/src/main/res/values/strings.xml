@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Medical Clinic App</string>
+    <string name="app_name">Medical Clinic</string>
 
     <string name="book_appointment_action">Book New Appointment</string>
 
