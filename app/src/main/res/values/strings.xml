@@ -1,13 +1,3 @@
 <resources>
     <string name="app_name">Medical Clinic</string>
-
-    <string name="book_appointment_action">Book New Appointment</string>
-
-    <string name="date_title">Date</string>
-    <string name="time_title">Time</string>
-    <string name="doctor_title">Doctor</string>
-    <string name="patient_title">Patient</string>
-    <string name="upcoming_appointments_title">Upcoming Appointments</string>
-
-    <string name="no_appointments_found">No appointments found! Book one below.</string>
 </resources>
