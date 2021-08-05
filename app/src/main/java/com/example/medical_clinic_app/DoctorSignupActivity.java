@@ -82,7 +82,7 @@ public class DoctorSignupActivity extends AppCompatActivity {
             return;
         }
 
-        if (!name.matches("[a-z0-9]+")) {
+        if (!username.matches("[a-z0-9]+")) {
             Toast.makeText(this, "Username must be alphanumeric", Toast.LENGTH_LONG).show();
             return;
         }
