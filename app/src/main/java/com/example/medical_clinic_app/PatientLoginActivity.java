@@ -31,17 +31,17 @@ public class PatientLoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
 
-        TextView txtUsername = (TextView)findViewById(R.id.txtLoginUsername);
-        TextView txtPassword = (TextView)findViewById(R.id.txtLoginPassword);
+        TextView txtUsername = (TextView)findViewById(R.id.edtTxtName);
+        TextView txtPassword = (TextView)findViewById(R.id.edtTxtPassword);
 
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(view -> {
             ClinicDao dao = new ClinicFirebaseDao();
-            String username = txtUsername.getText().toString();
             String password = txtPassword.getText().toString();
+            String username = txtUsername.getText().toString().trim().toLowerCase();
 
             if (username.length() == 0 || password.length() == 0) {
-                Toast.makeText(this, "Enter a valid username and password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Enter a valid username and password", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -50,8 +50,9 @@ public class PatientLoginActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Patient patient = snapshot.getValue(PatientObj.class);
                     if (patient == null || !patient.getPassword().equals(password)) {
-                        Toast.makeText(view.getContext(), "Patient username or password is incorrect", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(), "Patient username or password is incorrect", Toast.LENGTH_LONG).show();
                     } else {
+                        Toast.makeText(view.getContext(), "Successfully logged in as " + username, Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(view.getContext(), PatientDashboardActivity.class);
                         intent.putExtra(PatientDashboardActivity.KEY_PATIENT, username);
                         startActivity(intent);
