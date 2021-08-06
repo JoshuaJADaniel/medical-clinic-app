@@ -3,6 +3,7 @@ package com.example.medical_clinic_app.user;
 import java.util.List;
 
 public class PatientObj implements Patient {
+    private int age;
     private String name;
     private String gender;
     private String username;
@@ -14,12 +15,14 @@ public class PatientObj implements Patient {
 
     }
 
-    public PatientObj(String name,
+    public PatientObj(int age,
+                      String name,
                       String gender,
                       String username,
                       String password,
                       long dateOfBirth,
                       List<Integer> appointments) {
+        this.age = age;
         this.name = name;
         this.gender = gender;
         this.username = username;
@@ -91,6 +94,7 @@ public class PatientObj implements Patient {
     @Override
     public String toString() {
         return "PatientObj{" +
+                "age=" + age +
                 ", name='" + name + '\'' +
                 ", gender='" + gender + '\'' +
                 ", username='" + username + '\'' +
