@@ -6,4 +6,112 @@
     android:layout_height="match_parent"
     tools:context=".PatientDashboardActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarPatientDashboard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Patient Dashboard"
+        app:titleTextColor="@color/white" />
+
+    <TextView
+        android:id="@+id/txtAppointmentsPrompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Appointments"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarPatientDashboard" />
+
+    <ToggleButton
+        android:id="@+id/btnTogglePast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif"
+        android:onClick="togglePast"
+        android:textOff="View Past Appointments"
+        android:textOn="View Upcoming Appointments"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarPatientDashboard" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerAppointmentsUpcoming"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnBookNewAppointment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtAppointmentsPrompt" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerAppointmentsPast"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnBookNewAppointment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtAppointmentsPrompt" />
+
+    <Button
+        android:id="@+id/btnBookNewAppointment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Book New Appointment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.725"
+        app:layout_constraintStart_toEndOf="@+id/btnPreviousDoctors" />
+
+    <Button
+        android:id="@+id/btnPreviousDoctors"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Previously Seen Doctors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnBookNewAppointment"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtUpcomingEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You have no upcoming appointments, book on below!"
+        app:layout_constraintStart_toStartOf="@+id/recyclerAppointmentsUpcoming"
+        app:layout_constraintTop_toTopOf="@+id/recyclerAppointmentsUpcoming" />
+
+    <TextView
+        android:id="@+id/txtPastEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You have no previous appointments!"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/recyclerAppointmentsUpcoming"
+        app:layout_constraintTop_toTopOf="@+id/recyclerAppointmentsUpcoming" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
