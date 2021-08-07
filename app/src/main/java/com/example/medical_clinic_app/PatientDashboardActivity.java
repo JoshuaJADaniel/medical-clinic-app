@@ -153,7 +153,7 @@ public class PatientDashboardActivity extends AppCompatActivity {
         }
     }
 
-    public void transferToBookNewAppointment(View view) {
+    public void TransferToBookAppointments(View view){
         Intent intent = new Intent(this, BookNewAppointmentActivity.class);
         startActivity(intent);
     }
