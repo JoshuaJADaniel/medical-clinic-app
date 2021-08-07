@@ -16,8 +16,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
-
 public class ClinicFirebaseDao implements ClinicDao {
     private static final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private static final DatabaseReference doctorsRef = db.getReference("doctors");
@@ -85,7 +83,7 @@ public class ClinicFirebaseDao implements ClinicDao {
             public void onCancelled(@NonNull DatabaseError error) {
                 listener.callback(null);
                 Log.e(null, error.toString());
-                Log.e(null, String.format("Error reading appointment #%s", id));
+                Log.e(null, String.format("Error reading appointment with id %s", id));
             }
         });
     }
