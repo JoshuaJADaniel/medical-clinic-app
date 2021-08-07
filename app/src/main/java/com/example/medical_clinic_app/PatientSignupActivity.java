@@ -112,7 +112,7 @@ public class PatientSignupActivity extends AppCompatActivity {
             return;
         }
 
-        List<Integer> appointments = new ArrayList<>();
+        List<String> appointments = new ArrayList<>();
         String gender = spnGenders.getSelectedItem().toString();
         Patient patient = new PatientObj(name, gender, username, password, dateOfBirth, appointments);
 

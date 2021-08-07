@@ -8,7 +8,7 @@ public class PatientObj implements Patient {
     private String username;
     private String password;
     private long dateOfBirth;
-    private List<Integer> appointments;
+    private List<String> appointments;
 
     public PatientObj() {
 
@@ -19,7 +19,7 @@ public class PatientObj implements Patient {
                       String username,
                       String password,
                       long dateOfBirth,
-                      List<Integer> appointments) {
+                      List<String> appointments) {
         this.name = name;
         this.gender = gender;
         this.username = username;
@@ -49,13 +49,18 @@ public class PatientObj implements Patient {
     }
 
     @Override
-    public List<Integer> getAppointments() {
+    public List<String> getAppointments() {
         return appointments;
     }
 
     @Override
-    public void setAppointments(List<Integer> appointments) {
+    public void setAppointments(List<String> appointments) {
         this.appointments = appointments;
+    }
+
+    @Override
+    public void addToAppointments(String id) {
+        appointments.add(id);
     }
 
     @Override

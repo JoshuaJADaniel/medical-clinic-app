@@ -87,7 +87,7 @@ public class DoctorSignupActivity extends AppCompatActivity {
             return;
         }
 
-        List<Integer> appointments = new ArrayList<>();
+        List<String> appointments = new ArrayList<>();
         String gender = spnGenders.getSelectedItem().toString();
         String specialization = spnSpecializations.getSelectedItem().toString();
         Doctor doctor = new DoctorObj(name, gender, username, password, specialization, appointments, true);

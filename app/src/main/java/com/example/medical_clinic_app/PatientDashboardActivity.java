@@ -93,8 +93,8 @@ public class PatientDashboardActivity extends AppCompatActivity {
         DatabaseReference appointmentsRef = dao.getAppointmentsRef();
         if (patient.getAppointments() == null) return;
 
-        for (int id : patient.getAppointments()) {
-            appointmentsRef.child(String.valueOf(id)).addListenerForSingleValueEvent(new ValueEventListener() {
+        for (String id : patient.getAppointments()) {
+            appointmentsRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Appointment appointment = snapshot.getValue(GeneralAppointment.class);

@@ -10,7 +10,7 @@ public class DoctorObj implements Doctor {
     private String username;
     private String password;
     private String specialization;
-    private List<Integer> appointments;
+    private List<String> appointments;
     private boolean isActive;
 
     public DoctorObj() {
@@ -22,7 +22,7 @@ public class DoctorObj implements Doctor {
                      String username,
                      String password,
                      String specialization,
-                     List<Integer> appointments,
+                     List<String> appointments,
                      boolean isActive) {
         this.name = name;
         this.gender = gender;
@@ -94,13 +94,18 @@ public class DoctorObj implements Doctor {
     }
 
     @Override
-    public List<Integer> getAppointments() {
+    public List<String> getAppointments() {
         return appointments;
     }
 
     @Override
-    public void setAppointments(List<Integer> appointments) {
+    public void setAppointments(List<String> appointments) {
         this.appointments = appointments;
+    }
+
+    @Override
+    public void addToAppointments(String id) {
+        appointments.add(id);
     }
 
     @NonNull

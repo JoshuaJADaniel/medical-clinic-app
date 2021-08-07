@@ -1,23 +1,16 @@
 package com.example.medical_clinic_app;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
-import com.example.medical_clinic_app.user.Doctor;
-import com.example.medical_clinic_app.user.DoctorObj;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 public class DoctorLoginActivity extends AppCompatActivity {
     @Override
@@ -31,8 +24,8 @@ public class DoctorLoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
 
-        TextView txtUsername = (TextView)findViewById(R.id.edtTxtName);
-        TextView txtPassword = (TextView)findViewById(R.id.edtTxtPassword);
+        TextView txtUsername = findViewById(R.id.edtTxtName);
+        TextView txtPassword = findViewById(R.id.edtTxtPassword);
 
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(view -> {
@@ -45,30 +38,21 @@ public class DoctorLoginActivity extends AppCompatActivity {
                 return;
             }
 
-            dao.getDoctorsRef().child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Doctor doctor = snapshot.getValue(DoctorObj.class);
-                    if (doctor == null || !doctor.getPassword().equals(password)) {
-                        Toast.makeText(view.getContext(), "Doctor username or password is incorrect", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(view.getContext(), "Successfully logged in as " + username, Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(view.getContext(), DoctorDashboardActivity.class);
-                        intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
-                        startActivity(intent);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e(null, error.toString());
+            dao.getDoctor(username, doctor -> {
+                if (doctor == null || !doctor.getPassword().equals(password)) {
+                    Toast.makeText(DoctorLoginActivity.this, "Doctor username or password is incorrect", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(DoctorLoginActivity.this, "Successfully logged in as " + username, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(DoctorLoginActivity.this, DoctorDashboardActivity.class);
+                    intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
+                    startActivity(intent);
                 }
             });
         });
 
         Button btnSignup = findViewById(R.id.btnSignup);
         btnSignup.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), DoctorSignupActivity.class);
+            Intent intent = new Intent(DoctorLoginActivity.this, DoctorSignupActivity.class);
             startActivity(intent);
         });
     }

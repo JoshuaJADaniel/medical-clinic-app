@@ -6,6 +6,7 @@ public interface Patient extends User {
     long getDateOfBirth();
     void setDateOfBirth(long dateOfBirth);
 
-    List<Integer> getAppointments();
-    void setAppointments(List<Integer> appointments);
+    List<String> getAppointments();
+    void addToAppointments(String id);
+    void setAppointments(List<String> appointments);
 }
