@@ -1,12 +1,10 @@
 package com.example.medical_clinic_app;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -19,10 +17,7 @@ import com.example.medical_clinic_app.user.Doctor;
 import com.example.medical_clinic_app.user.DoctorObj;
 import com.example.medical_clinic_app.user.DoctorSpecializations;
 import com.example.medical_clinic_app.user.UserGenders;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.example.medical_clinic_app.utils.ErrorToasts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,44 +68,36 @@ public class DoctorSignupActivity extends AppCompatActivity {
     }
 
     public void signupAction(View view) {
+        ClinicDao dao = new ClinicFirebaseDao();
         String name = edtTxtName.getText().toString().trim();
         String password = edtTxtPassword.getText().toString();
-        String username = edtTxtUsername.getText().toString().trim().toLowerCase();
+        String username = edtTxtUsername.getText().toString().trim();
 
         if (name.length() == 0 || username.length() == 0 || password.length() == 0) {
-            Toast.makeText(this, "Please fill all empty fields", Toast.LENGTH_LONG).show();
+            ErrorToasts.emptyFieldsError(this);
             return;
         }
 
-        if (!username.matches("[a-z0-9]+")) {
-            Toast.makeText(this, "Username must be alphanumeric", Toast.LENGTH_LONG).show();
-            return;
+        try {
+            dao.validateUsername(username);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         List<String> appointments = new ArrayList<>();
         String gender = spnGenders.getSelectedItem().toString();
         String specialization = spnSpecializations.getSelectedItem().toString();
-        Doctor doctor = new DoctorObj(name, gender, username, password, specialization, appointments, true);
+        Doctor enteredDoctor = new DoctorObj(name, gender, username, password, specialization, appointments, true);
 
-        ClinicDao dao = new ClinicFirebaseDao();
-        DatabaseReference doctorsRef = dao.getDoctorsRef();
-        doctorsRef.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue(DoctorObj.class) == null) {
-                    doctorsRef.child(username).setValue(doctor);
-                    Toast.makeText(view.getContext(), "Successfully created your account", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(view.getContext(), DoctorDashboardActivity.class);
-                    intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(view.getContext(), "Sorry, that username is already taken", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(null, error.toString());
+        dao.getDoctor(username, doctor -> {
+            if (doctor == null) {
+                dao.getDoctorsRef().child(username).setValue(enteredDoctor);
+                Toast.makeText(view.getContext(), "Successfully created your account: " + username, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(view.getContext(), DoctorDashboardActivity.class);
+                intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
+                startActivity(intent);
+            } else {
+                ErrorToasts.usernameTaken(DoctorSignupActivity.this);
             }
         });
     }
