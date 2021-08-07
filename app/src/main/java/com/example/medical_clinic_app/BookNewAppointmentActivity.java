@@ -23,7 +23,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.medical_clinic_app.adapters.AdapterRecyclerAppointments;
@@ -45,26 +49,36 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-public class BookNewAppointmentActivity extends AppCompatActivity {
+public class BookNewAppointmentActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private List<Doctor> DoctorList;
     private Doctor doctor;
 
     private RecyclerView recyclerDoctorsList;
     private AdapterRecyclerDoctorsAvailable adapterDoctorsList;
-
+    private String GenderFlag = "Gender";
     List<Integer> lt = null;
+    public String Gender = "Gender";
+    private String Specialization = "Specialization";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_new_appointment);
 
+
         DoctorList = new ArrayList<>();
 
         recyclerDoctorsList = findViewById(R.id.recyclerDoctorList);
 
         setDoctorAdapter();
-        setDoctorList();
+        // the Spinner will automatically trigger the setDoctorList at the beginning
+        //so no need to setDoctorList up
+        Spinner GenderSpinner = findViewById(R.id.GenderSpinner);
+        ArrayAdapter<CharSequence> GenderAdapter = ArrayAdapter.createFromResource(this,R.array.numbers, android.R.layout.simple_spinner_item);
+        GenderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        GenderSpinner.setAdapter(GenderAdapter);
+        GenderSpinner.setOnItemSelectedListener(this);
+        //setDoctorList(Gender, Specialization);
 
 
 
@@ -78,15 +92,19 @@ public class BookNewAppointmentActivity extends AppCompatActivity {
         recyclerDoctorsList.setAdapter(adapterDoctorsList);
     }
 
-    public void setDoctorList(){
+    public void setDoctorList(String Gender, String Specilization){
+        DoctorList.removeAll(DoctorList);
+
         ClinicDao dao = new ClinicFirebaseDao();
         DatabaseReference DoctorDatabase = dao.getDoctorsRef();
         DoctorDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot datasnapshot :snapshot.getChildren()){
+
                     Doctor doctor = datasnapshot.getValue(DoctorObj.class);
-                    DoctorList.add(doctor);
+                    if(Gender.equals("Gender")) DoctorList.add(doctor);
+                    else if(Gender.equals(doctor.getGender().trim())) DoctorList.add(doctor);
                     //adapterDoctorsList.notifyItemInserted(DoctorList.size()-2);
                 }
                 adapterDoctorsList.notifyDataSetChanged();
@@ -100,6 +118,24 @@ public class BookNewAppointmentActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String text = adapterView.getItemAtPosition(i).toString();
+
+        Gender = adapterView.getItemAtPosition(i).toString().trim();
+        setDoctorList(Gender, Specialization);
+
+        Toast.makeText(adapterView.getContext(),text, Toast.LENGTH_SHORT).show();
+    }
+
+
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }
