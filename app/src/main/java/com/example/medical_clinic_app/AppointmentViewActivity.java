@@ -13,12 +13,10 @@ import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
 import com.example.medical_clinic_app.utils.ErrorToasts;
 
-import java.time.LocalDateTime;
-
 public class AppointmentViewActivity extends AppCompatActivity {
     public static final String KEY_TIME = "KEY_TIME";
     public static final String KEY_PATIENT = "KEY_PATIENT";
-    public static final String KEY_DOCTOR_PERSPECTIVE = "KEY_DOCTOR_PERSPECTIVE";
+    public static final String KEY_IS_DOCTOR = "KEY_IS_DOCTOR";
     public static final String KEY_DOCTOR = "KEY_DOCTOR";
 
     @Override
@@ -33,7 +31,7 @@ public class AppointmentViewActivity extends AppCompatActivity {
         populateTime(intent.getLongExtra(KEY_TIME, 0));
 
         Button btnPastDoctors = findViewById(R.id.btnPastDoctors);
-        if (!intent.getBooleanExtra(KEY_DOCTOR_PERSPECTIVE, false)) {
+        if (!intent.getBooleanExtra(KEY_IS_DOCTOR, false)) {
             btnPastDoctors.setVisibility(View.GONE);
         }
     }
@@ -47,14 +45,12 @@ public class AppointmentViewActivity extends AppCompatActivity {
 
         dao.getPatient(username, patient -> {
             if (patient == null) {
-                ErrorToasts.databaseToast(AppointmentViewActivity.this);
-                return;
+                ErrorToasts.databasePatientError(AppointmentViewActivity.this);
+            } else {
+                txtPatientName.setText(patient.getName());
+                txtPatientGender.setText(patient.getGender());
+                txtPatientDob.setText(dateConverter.getFormattedDate(patient.getDateOfBirth()));
             }
-
-            txtPatientName.setText(patient.getName());
-            txtPatientGender.setText(patient.getGender());
-            LocalDateTime dateOfBirth = dateConverter.longToDate(patient.getDateOfBirth());
-            txtPatientDob.setText(dateOfBirth.toString());
         });
     }
 
@@ -65,25 +61,26 @@ public class AppointmentViewActivity extends AppCompatActivity {
         TextView txtDoctorSpecialization = findViewById(R.id.txtDoctorSpecialization);
         TextView txtDoctorStatus = findViewById(R.id.txtDoctorStatus);
 
-
         dao.getDoctor(username, doctor -> {
             if (doctor == null) {
-                ErrorToasts.databaseToast(AppointmentViewActivity.this);
-                return;
+                ErrorToasts.databaseDoctorError(AppointmentViewActivity.this);
+            } else {
+                txtDoctorName.setText(doctor.getName());
+                txtDoctorGender.setText(doctor.getGender());
+                txtDoctorSpecialization.setText(doctor.getSpecialization());
+                txtDoctorStatus.setText(doctor.getIsActive() ? "Active" : "Inactive");
             }
-
-            txtDoctorName.setText(doctor.getName());
-            txtDoctorGender.setText(doctor.getGender());
-            txtDoctorSpecialization.setText(doctor.getSpecialization());
-            txtDoctorStatus.setText(doctor.getIsActive() ? "Active" : "Inactive");
         });
     }
 
     private void populateTime(long time) {
         ClinicDao dao = new ClinicFirebaseDao();
-        DateConverter dateConverter = dao.defaultDateConverter();
-        LocalDateTime date = dateConverter.longToDate(time);
         TextView txtDate = findViewById(R.id.txtDate);
-        txtDate.setText(date.toString());
+        DateConverter dateConverter = dao.defaultDateConverter();
+        txtDate.setText(String.format("%s at %s %s",
+                dateConverter.getFormattedDate(time),
+                dateConverter.getFormattedTime(time),
+                dateConverter.getLocale()
+        ));
     }
 }
