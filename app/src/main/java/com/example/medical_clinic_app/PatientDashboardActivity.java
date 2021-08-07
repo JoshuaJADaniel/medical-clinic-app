@@ -1,6 +1,5 @@
 package com.example.medical_clinic_app;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,34 +7,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.medical_clinic_app.adapters.AdapterRecyclerAppointments;
 import com.example.medical_clinic_app.appointment.Appointment;
-import com.example.medical_clinic_app.appointment.GeneralAppointment;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
-import com.example.medical_clinic_app.user.Patient;
-import com.example.medical_clinic_app.user.PatientObj;
+import com.example.medical_clinic_app.utils.ErrorToasts;
 import com.example.medical_clinic_app.utils.FormatPatientsAppointment;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class PatientDashboardActivity extends AppCompatActivity {
     public static final String KEY_PATIENT = "KEY_PATIENT";
-
-    private Patient patient;
 
     private ToggleButton btnTogglePast;
 
@@ -66,59 +55,50 @@ public class PatientDashboardActivity extends AppCompatActivity {
         recyclerPastAppointments = findViewById(R.id.recyclerAppointmentsPast);
         recyclerUpcomingAppointments = findViewById(R.id.recyclerAppointmentsUpcoming);
 
-        setAppointmentsAdapter();
         Intent intent = getIntent();
-        retrievePatient(intent.getStringExtra(KEY_PATIENT));
+        String patientUsername = intent.getStringExtra(KEY_PATIENT);
+
+        if (patientUsername == null) {
+            ErrorToasts.databasePatientError(this);
+        } else {
+            setAppointmentsAdapter();
+            populateDashboard(patientUsername);
+        }
     }
 
-    private void retrievePatient(String username) {
-        ClinicDao dao = new ClinicFirebaseDao();
-        dao.getPatientsRef().child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                patient = snapshot.getValue(PatientObj.class);
-                populateAppointments();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(null, error.toString());
-            }
-        });
-    }
-
-    private void populateAppointments() {
+    private void populateDashboard(String patientUsername) {
         ClinicDao dao = new ClinicFirebaseDao();
         DateConverter dateConverter = dao.defaultDateConverter();
-        DatabaseReference appointmentsRef = dao.getAppointmentsRef();
-        if (patient.getAppointments() == null) return;
 
-        for (String id : patient.getAppointments()) {
-            appointmentsRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Appointment appointment = snapshot.getValue(GeneralAppointment.class);
-                    LocalDateTime date = dateConverter.longToDate(Objects.requireNonNull(appointment).getDate());
+        dao.getPatient(patientUsername, patient -> {
+            if (patient.getAppointments() == null) {
+                ErrorToasts.databasePatientError(PatientDashboardActivity.this);
+                return;
+            }
+
+            for (String id : patient.getAppointments()) {
+                dao.getAppointment(id, appointment -> {
+                    if (appointment == null) {
+                        ErrorToasts.databaseAppointmentError(PatientDashboardActivity.this);
+                        return;
+                    }
+
                     LocalDateTime now = LocalDateTime.now();
+                    LocalDateTime appointmentDate = dateConverter.longToDate(appointment.getDate());
 
-                    if (date.isBefore(now)) {
+                    if (appointmentDate.isBefore(now)) {
                         pastAppointments.add(appointment);
                         adapterRecyclerPastAppointments.notifyItemInserted(pastAppointments.size() - 1);
                     } else {
                         upcomingAppointments.add(appointment);
-                        adapterRecyclerPastAppointments.notifyItemInserted(upcomingAppointments.size() - 1);
+                        adapterRecyclerUpcomingAppointments.notifyItemInserted(upcomingAppointments.size() - 1);
 
                         txtPastEmpty.setVisibility(View.INVISIBLE);
                         recyclerUpcomingAppointments.setVisibility(View.VISIBLE);
                     }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e(null, error.toString());
-                }
-            });
-        }
+                });
+            }
+        });
     }
 
     private void setAppointmentsAdapter() {
@@ -153,9 +133,8 @@ public class PatientDashboardActivity extends AppCompatActivity {
         }
     }
 
-    public void TransferToBookAppointments(View view){
+    public void transferToBookAppointments(View view) {
         Intent intent = new Intent(this, BookNewAppointmentActivity.class);
         startActivity(intent);
     }
-
 }
