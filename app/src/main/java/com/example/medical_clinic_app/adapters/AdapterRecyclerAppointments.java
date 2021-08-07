@@ -1,8 +1,5 @@
 package com.example.medical_clinic_app.adapters;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +17,6 @@ import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
 import com.example.medical_clinic_app.utils.FormatUsersAppointmentStrategy;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class AdapterRecyclerAppointments extends RecyclerView.Adapter<AdapterRecyclerAppointments.MyViewHolder> {
@@ -65,7 +61,6 @@ public class AdapterRecyclerAppointments extends RecyclerView.Adapter<AdapterRec
     }
 
     @Override
-    @SuppressLint("DefaultLocale")
     public void onBindViewHolder(@NonNull AdapterRecyclerAppointments.MyViewHolder holder, int position) {
         Appointment appointment = appointments.get(position);
 
@@ -75,9 +70,8 @@ public class AdapterRecyclerAppointments extends RecyclerView.Adapter<AdapterRec
 
         ClinicDao dao = new ClinicFirebaseDao();
         DateConverter dateConverter = dao.defaultDateConverter();
-        LocalDateTime date = dateConverter.longToDate(appointment.getDate());
-        holder.txtDate.setText(String.format("%s %d, %d", date.getMonth(), date.getDayOfMonth(), date.getYear()));
-        holder.txtTime.setText(String.format("%02d:%02d", date.getHour(), date.getMinute()));
+        holder.txtDate.setText(dateConverter.getFormattedDate(appointment.getDate()));
+        holder.txtTime.setText(dateConverter.getFormattedTime(appointment.getDate()));
         userFormatStrategy.formatTxtUser(holder.txtUser, appointment);
     }
 
