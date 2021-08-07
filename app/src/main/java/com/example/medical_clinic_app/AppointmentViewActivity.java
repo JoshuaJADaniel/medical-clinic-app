@@ -1,6 +1,7 @@
 package com.example.medical_clinic_app;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,8 +25,12 @@ public class AppointmentViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment_view);
 
-        Intent intent = getIntent();
+        Toolbar toolbar = findViewById(R.id.toolbarAppointment);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
 
+        Intent intent = getIntent();
         populatePatient(intent.getStringExtra(KEY_PATIENT));
         populateDoctor(intent.getStringExtra(KEY_DOCTOR));
         populateTime(intent.getLongExtra(KEY_TIME, 0));
@@ -34,6 +39,12 @@ public class AppointmentViewActivity extends AppCompatActivity {
         if (!intent.getBooleanExtra(KEY_IS_DOCTOR, false)) {
             btnPastDoctors.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void populatePatient(String username) {
