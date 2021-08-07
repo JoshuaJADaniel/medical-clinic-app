@@ -109,6 +109,17 @@ public class ClinicFirebaseDao implements ClinicDao {
     }
 
     @Override
+    public void validateUsername(String username) throws Exception {
+        int minLength = 3, maxLength = 32;
+        username = parseUsername(username);
+        if (username.length() < minLength || username.length() > maxLength) {
+            throw new Exception(String.format("Username must be %d-%d characters long!", minLength, maxLength));
+        } else if (!username.matches("[a-z0-9]+")) {
+            throw new Exception("Username must be alphanumeric!");
+        }
+    }
+
+    @Override
     public DateConverter defaultDateConverter() {
         return new UtcDateConverter();
     }

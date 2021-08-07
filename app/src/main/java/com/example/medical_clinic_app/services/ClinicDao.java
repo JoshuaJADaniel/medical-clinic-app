@@ -29,5 +29,7 @@ public interface ClinicDao {
 
     boolean addAppointment(Appointment appointment);
 
+    void validateUsername(String username) throws Exception;
+
     DateConverter defaultDateConverter();
 }
