@@ -58,7 +58,7 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
     private AdapterRecyclerDoctorsAvailable adapterDoctorsList;
     private String GenderFlag = "Gender";
     public String Gender = "Gender";
-    private String Specialization = "Specialization";
+    private String Specialization = "Monkey";
 
     private List<String> GenderList;
     private List<String> SpecializationList;
@@ -91,7 +91,6 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
         SpecializationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         SpecializationSpinner.setAdapter(SpecializationAdapter);
         SpecializationSpinner.setOnItemSelectedListener(this);
-        setDoctorList(Gender, Specialization);
 
     }
 
@@ -156,7 +155,6 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
 
     }
 
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String text = adapterView.getItemAtPosition(i).toString().trim();
@@ -166,13 +164,13 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
             Gender = text;
         }
 
+
         if(!(Gender.equals("Gender")) || !(Specialization.equals("Specialization"))) setDoctorList(Gender, Specialization);
+        else if( Gender.equals("Gender") && Specialization.equals("Specialization")) setDoctorList(Gender, Specialization);
 
         Toast.makeText(adapterView.getContext(),text, Toast.LENGTH_SHORT).show();
 
     }
-
-
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
