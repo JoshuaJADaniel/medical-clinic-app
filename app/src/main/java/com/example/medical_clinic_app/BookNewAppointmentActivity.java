@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,17 +57,22 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
     private RecyclerView recyclerDoctorsList;
     private AdapterRecyclerDoctorsAvailable adapterDoctorsList;
     private String GenderFlag = "Gender";
-    List<Integer> lt = null;
     public String Gender = "Gender";
-    private String Specialization = "Specialization";
+    private String Specialization = "Monkey";
+
+    private List<String> GenderList;
+    private List<String> SpecializationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_new_appointment);
+        setUpGenderList();
+        setUpSpecializationList();
 
 
         DoctorList = new ArrayList<>();
+
 
         recyclerDoctorsList = findViewById(R.id.recyclerDoctorList);
 
@@ -78,10 +84,32 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
         GenderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         GenderSpinner.setAdapter(GenderAdapter);
         GenderSpinner.setOnItemSelectedListener(this);
-        //setDoctorList(Gender, Specialization);
 
 
+        Spinner SpecializationSpinner = findViewById(R.id.SpecializationSpinner);
+        ArrayAdapter<CharSequence> SpecializationAdapter = ArrayAdapter.createFromResource(this,R.array.SpecializationList, android.R.layout.simple_spinner_item);
+        SpecializationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        SpecializationSpinner.setAdapter(SpecializationAdapter);
+        SpecializationSpinner.setOnItemSelectedListener(this);
 
+    }
+
+    private void setUpSpecializationList() {
+
+        SpecializationList = new ArrayList<>();
+        SpecializationList.add("Specialization");
+        SpecializationList.add("Allergist");
+        SpecializationList.add("Cardiologist");
+        SpecializationList.add("Dentist");
+        SpecializationList.add("Dermatologist");
+        SpecializationList.add("Psychiatrist");
+        SpecializationList.add("Radiologist");
+        SpecializationList.add("Urologist");
+
+    }
+
+    private void setUpGenderList() {
+        GenderList = new ArrayList<>();
     }
 
     public void setDoctorAdapter(){
@@ -92,7 +120,7 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
         recyclerDoctorsList.setAdapter(adapterDoctorsList);
     }
 
-    public void setDoctorList(String Gender, String Specilization){
+    public void setDoctorList(String Gender, String Specialization){
         DoctorList.removeAll(DoctorList);
 
         ClinicDao dao = new ClinicFirebaseDao();
@@ -100,13 +128,19 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
         DoctorDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot datasnapshot :snapshot.getChildren()){
+                for(DataSnapshot datasnapshot :snapshot.getChildren()) {
 
                     Doctor doctor = datasnapshot.getValue(DoctorObj.class);
-                    if(Gender.equals("Gender")) DoctorList.add(doctor);
-                    else if(Gender.equals(doctor.getGender().trim())) DoctorList.add(doctor);
-                    //adapterDoctorsList.notifyItemInserted(DoctorList.size()-2);
+                    if (Gender.equals("Gender") && Specialization.equals("Specialization"))
+                        DoctorList.add(doctor);
+                    else if (Gender.equals("Gender") && !(Specialization.equals("Specialization"))) {
+                        if (doctor.getSpecialization().equals(Specialization))
+                            DoctorList.add(doctor);
+                    } else if (!(Gender.equals("Gender")) && Specialization.equals("Specialization")) {
+                        if (doctor.getGender().equals(Gender)) DoctorList.add(doctor);
+                    } else if (doctor.getGender().equals(Gender) && doctor.getSpecialization().equals(Specialization)) DoctorList.add(doctor);
                 }
+
                 adapterDoctorsList.notifyDataSetChanged();
 
             }
@@ -121,18 +155,22 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
 
     }
 
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        String text = adapterView.getItemAtPosition(i).toString();
+        String text = adapterView.getItemAtPosition(i).toString().trim();
+        if(SpecializationList.contains(text)){
+            Specialization = text;
+        }else {
+            Gender = text;
+        }
 
-        Gender = adapterView.getItemAtPosition(i).toString().trim();
-        setDoctorList(Gender, Specialization);
+
+        if(!(Gender.equals("Gender")) || !(Specialization.equals("Specialization"))) setDoctorList(Gender, Specialization);
+        else if( Gender.equals("Gender") && Specialization.equals("Specialization")) setDoctorList(Gender, Specialization);
 
         Toast.makeText(adapterView.getContext(),text, Toast.LENGTH_SHORT).show();
+
     }
-
-
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
