@@ -74,7 +74,7 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
         // the Spinner will automatically trigger the setDoctorList at the beginning
         //so no need to setDoctorList up
         Spinner GenderSpinner = findViewById(R.id.GenderSpinner);
-        ArrayAdapter<CharSequence> GenderAdapter = ArrayAdapter.createFromResource(this,R.array.numbers, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> GenderAdapter = ArrayAdapter.createFromResource(this,R.array.GenderList, android.R.layout.simple_spinner_item);
         GenderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         GenderSpinner.setAdapter(GenderAdapter);
         GenderSpinner.setOnItemSelectedListener(this);
