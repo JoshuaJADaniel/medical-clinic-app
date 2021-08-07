@@ -1,11 +1,9 @@
 package com.example.medical_clinic_app;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,17 +11,9 @@ import android.widget.TextView;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
-import com.example.medical_clinic_app.user.Doctor;
-import com.example.medical_clinic_app.user.DoctorObj;
-import com.example.medical_clinic_app.user.Patient;
-import com.example.medical_clinic_app.user.PatientObj;
-import com.example.medical_clinic_app.utils.ErrorMessages;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.example.medical_clinic_app.utils.ErrorToasts;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class AppointmentViewActivity extends AppCompatActivity {
     public static final String KEY_TIME = "KEY_TIME";
@@ -57,7 +47,7 @@ public class AppointmentViewActivity extends AppCompatActivity {
 
         dao.getPatient(username, patient -> {
             if (patient == null) {
-                ErrorMessages.databaseToast(AppointmentViewActivity.this);
+                ErrorToasts.databaseToast(AppointmentViewActivity.this);
                 return;
             }
 
@@ -78,7 +68,7 @@ public class AppointmentViewActivity extends AppCompatActivity {
 
         dao.getDoctor(username, doctor -> {
             if (doctor == null) {
-                ErrorMessages.databaseToast(AppointmentViewActivity.this);
+                ErrorToasts.databaseToast(AppointmentViewActivity.this);
                 return;
             }
 
