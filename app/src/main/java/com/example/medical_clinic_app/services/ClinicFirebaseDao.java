@@ -93,8 +93,9 @@ public class ClinicFirebaseDao implements ClinicDao {
         try {
             getPatient(appointment.getPatient(), patient -> {
                 getDoctor(appointment.getDoctor(), doctor -> {
-                    appointmentsRef.push().setValue(appointment);
-                    String appointmentId = appointmentsRef.getKey();
+                    DatabaseReference newRef = appointmentsRef.push();
+                    String appointmentId = newRef.getKey();
+                    newRef.setValue(appointment);
 
                     doctor.addToAppointments(appointmentId);
                     patient.addToAppointments(appointmentId);
