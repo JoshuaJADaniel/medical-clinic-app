@@ -45,11 +45,16 @@ public class AdapterRecyclerAppointments extends RecyclerView.Adapter<AdapterRec
             txtUser = view.findViewById(R.id.txtUser);
 
             view.setOnClickListener(innerView -> {
-                Intent intent = new Intent(view.getContext(), AppointmentViewActivity.class);
-                intent.putExtra(AppointmentViewActivity.KEY_PATIENT, patient);
-                intent.putExtra(AppointmentViewActivity.KEY_DOCTOR, doctor);
-                intent.putExtra(AppointmentViewActivity.KEY_TIME, date);
-                view.getContext().startActivity(intent);
+
+                    Intent intent = new Intent(view.getContext(), AppointmentViewActivity.class);
+
+                    intent.putExtra(AppointmentViewActivity.KEY_PATIENT, patient);
+                    intent.putExtra(AppointmentViewActivity.KEY_DOCTOR, doctor);
+                    intent.putExtra(AppointmentViewActivity.KEY_TIME, date);
+                    view.getContext().startActivity(intent);
+
+
+
             });
         }
     }
