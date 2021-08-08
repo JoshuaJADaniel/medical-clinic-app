@@ -13,6 +13,8 @@ import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.utils.CommonToasts;
 
 public class DoctorLoginActivity extends AppCompatActivity {
+    private Toolbar toolbar;
+
     private TextView txtUsername;
     private TextView txtPassword;
 
@@ -23,6 +25,8 @@ public class DoctorLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        toolbar = findViewById(R.id.toolbarLogin);
 
         txtUsername = findViewById(R.id.edtTxtUsername);
         txtPassword = findViewById(R.id.edtTxtPassword);
@@ -42,7 +46,6 @@ public class DoctorLoginActivity extends AppCompatActivity {
     }
 
     private void initializeToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbarLogin);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Doctor Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
