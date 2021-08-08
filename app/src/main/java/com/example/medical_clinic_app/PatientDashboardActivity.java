@@ -39,6 +39,8 @@ public class PatientDashboardActivity extends AppCompatActivity {
     private AdapterRecyclerAppointments adapterRecyclerPastAppointments;
     private AdapterRecyclerAppointments adapterRecyclerUpcomingAppointments;
 
+    private String patientUsername;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,17 +58,17 @@ public class PatientDashboardActivity extends AppCompatActivity {
         recyclerUpcomingAppointments = findViewById(R.id.recyclerAppointmentsUpcoming);
 
         Intent intent = getIntent();
-        String patientUsername = intent.getStringExtra(KEY_PATIENT);
+        patientUsername = intent.getStringExtra(KEY_PATIENT);
 
         if (patientUsername == null) {
             ErrorToasts.databasePatientError(this);
         } else {
             setAppointmentsAdapter();
-            populateDashboard(patientUsername);
+            populateDashboard();
         }
     }
 
-    private void populateDashboard(String patientUsername) {
+    private void populateDashboard() {
         ClinicDao dao = new ClinicFirebaseDao();
         DateConverter dateConverter = dao.defaultDateConverter();
 
@@ -135,6 +137,7 @@ public class PatientDashboardActivity extends AppCompatActivity {
 
     public void transferToBookAppointments(View view) {
         Intent intent = new Intent(this, AvailableDoctorListActivity.class);
+        intent.putExtra(AvailableDoctorListActivity.KEY_PATIENT, patientUsername);
         startActivity(intent);
     }
 }

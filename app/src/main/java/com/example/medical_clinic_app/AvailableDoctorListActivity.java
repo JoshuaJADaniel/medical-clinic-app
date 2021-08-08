@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 public class AvailableDoctorListActivity extends AppCompatActivity {
+    public final static String KEY_PATIENT = "KEY_PATIENT";
+
     private List<Doctor> doctorList;
     private List<Doctor> filteredDoctorList;
 
@@ -44,12 +46,15 @@ public class AvailableDoctorListActivity extends AppCompatActivity {
     private final String genderPrompt = "Select Gender";
     private final String specializationPrompt = "Select Specialization";
 
+    private String patientUsername;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_available_doctor_list);
 
         recyclerDoctorList = findViewById(R.id.recyclerDoctorList);
+        patientUsername = getIntent().getStringExtra(KEY_PATIENT);
 
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbarAvailableDoctors);
@@ -114,7 +119,7 @@ public class AvailableDoctorListActivity extends AppCompatActivity {
     }
 
     public void setDoctorAdapter() {
-        adapterDoctorList = new AdapterRecyclerDoctorsAvailable(filteredDoctorList);
+        adapterDoctorList = new AdapterRecyclerDoctorsAvailable(filteredDoctorList, patientUsername);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerDoctorList.setItemAnimator(new DefaultItemAnimator());
         recyclerDoctorList.setLayoutManager(layoutManager);
