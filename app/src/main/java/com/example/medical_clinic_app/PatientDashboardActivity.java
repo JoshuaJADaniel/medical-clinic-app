@@ -95,7 +95,7 @@ public class PatientDashboardActivity extends AppCompatActivity {
                         upcomingAppointments.add(appointment);
                         adapterRecyclerUpcomingAppointments.notifyItemInserted(upcomingAppointments.size() - 1);
 
-                        txtPastEmpty.setVisibility(View.INVISIBLE);
+                        txtUpcomingEmpty.setVisibility(View.INVISIBLE);
                         recyclerUpcomingAppointments.setVisibility(View.VISIBLE);
                     }
                 });
