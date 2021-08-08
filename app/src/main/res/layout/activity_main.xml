@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/imgMainWave"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewMainTop"
-        app:srcCompat="@drawable/wave" />
-
     <View
         android:id="@+id/viewMainTop"
         android:layout_width="0dp"
@@ -39,34 +29,18 @@
         app:layout_constraintTop_toTopOf="@+id/viewMainTop"
         app:layout_constraintVertical_bias="0.75" />
 
-    <Button
-        android:id="@+id/btnPatientLogin"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_marginTop="128dp"
-        android:drawableTop="@drawable/ic_medical_large"
-        android:onClick="transferToDoctorLogin"
-        android:text="Doctor"
+    <ImageView
+        android:id="@+id/imgMainWave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnDoctorLogin"
-        app:layout_constraintTop_toBottomOf="@+id/imgMainWave" />
-
-    <Button
-        android:id="@+id/btnDoctorLogin"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:layout_marginTop="128dp"
-        android:drawableTop="@drawable/ic_person_large"
-        android:onClick="transferToPatientLogin"
-        android:text="Patient"
-        app:layout_constraintEnd_toStartOf="@+id/btnPatientLogin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgMainWave" />
+        app:layout_constraintTop_toBottomOf="@+id/viewMainTop"
+        app:srcCompat="@drawable/wave" />
 
     <TextView
-        android:id="@+id/txtUserTypePrompt"
+        android:id="@+id/txtUserPrompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -75,6 +49,32 @@
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgMainWave" />
+
+    <Button
+        android:id="@+id/btnPatientLogin"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="128dp"
+        android:drawableTop="@drawable/ic_person_large"
+        android:onClick="transferToPatientLogin"
+        android:text="Patient"
+        app:layout_constraintEnd_toStartOf="@+id/btnDoctorLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgMainWave" />
+
+    <Button
+        android:id="@+id/btnDoctorLogin"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:layout_marginTop="128dp"
+        android:drawableTop="@drawable/ic_medical_large"
+        android:onClick="transferToDoctorLogin"
+        android:text="Doctor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnPatientLogin"
         app:layout_constraintTop_toBottomOf="@+id/imgMainWave" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
