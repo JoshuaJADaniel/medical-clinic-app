@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatientSignupActivity extends AppCompatActivity {
+    private Toolbar toolbar;
+
     private EditText edtTxtName;
     private EditText edtTxtUsername;
     private EditText edtTxtPassword;
@@ -39,12 +41,8 @@ public class PatientSignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_signup);
 
-        Toolbar toolbar = findViewById(R.id.toolbarPatientSignup);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
+        toolbar = findViewById(R.id.toolbarPatientSignup);
 
-        // Components
         edtTxtName = findViewById(R.id.edtTxtName);
         edtTxtUsername = findViewById(R.id.edtTxtUsername);
         edtTxtPassword = findViewById(R.id.edtTxtPassword);
@@ -55,17 +53,27 @@ public class PatientSignupActivity extends AppCompatActivity {
 
         spnGenders = findViewById(R.id.spnGenders);
 
-        // Initialize spinners
-        ArrayList<String> genders = new ArrayList<>(UserGenders.getGenders());
-        ArrayAdapter<String> gendersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genders);
-        gendersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnGenders.setAdapter(gendersAdapter);
+        initializeToolbar();
+        initializeSpinners();
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    private void initializeToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
+    }
+
+    private void initializeSpinners() {
+        List<String> genders = new ArrayList<>(UserGenders.getGenders());
+        ArrayAdapter<String> gendersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genders);
+        gendersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnGenders.setAdapter(gendersAdapter);
     }
 
     public void signupAction(View view) {
@@ -75,13 +83,14 @@ public class PatientSignupActivity extends AppCompatActivity {
         String name = edtTxtName.getText().toString().trim();
         String password = edtTxtPassword.getText().toString();
         String username = edtTxtUsername.getText().toString().trim();
+        String gender = spnGenders.getSelectedItem().toString();
 
-        String dayOfBirth = edtNumDay.getText().toString();
-        String monthOfBirth = edtNumMonth.getText().toString();
-        String yearOfBirth = edtNumYear.getText().toString();
+        String strDayNum = edtNumDay.getText().toString();
+        String strMonthNum = edtNumMonth.getText().toString();
+        String strYearNum = edtNumYear.getText().toString();
 
         if (name.length() == 0 || username.length() == 0 || password.length() == 0 ||
-                dayOfBirth.length() == 0 || monthOfBirth.length() == 0 || yearOfBirth.length() == 0) {
+                strDayNum.length() == 0 || strMonthNum.length() == 0 || strYearNum.length() == 0) {
             CommonToasts.emptyFieldsError(this);
             return;
         }
@@ -90,32 +99,31 @@ public class PatientSignupActivity extends AppCompatActivity {
             dao.validateUsername(username);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        int day = Integer.parseInt(dayOfBirth);
-        int month = Integer.parseInt(monthOfBirth);
-        int year = Integer.parseInt(yearOfBirth);
-        long dateOfBirth;
-
-        try {
-            int minYear = 1800;
-            LocalDateTime date = LocalDateTime.of(year, month, day, 0, 0);
-            if (year < minYear || date.isAfter(LocalDateTime.now())) throw new Exception();
-            dateOfBirth = dateConverter.dateToLong(date);
-        } catch (Exception e) {
-            Toast.makeText(this, "Please enter a valid date!", Toast.LENGTH_LONG).show();
             return;
         }
 
-        List<String> appointments = new ArrayList<>();
-        String gender = spnGenders.getSelectedItem().toString();
-        Patient newPatient = new PatientObj(name, gender, username, password, dateOfBirth, appointments);
+        int dayOfBirth = Integer.parseInt(strDayNum);
+        int monthOfBirth = Integer.parseInt(strMonthNum);
+        int yearOfBirth = Integer.parseInt(strYearNum);
+        long dateOfBirth;
 
-        dao.getPatient(username, patient -> {
-            if (patient == null) {
+        try {
+            int minimumYearOfBirth = 1800;
+            LocalDateTime date = LocalDateTime.of(yearOfBirth, monthOfBirth, dayOfBirth, 0, 0);
+            if (yearOfBirth < minimumYearOfBirth || date.isAfter(LocalDateTime.now())) throw new Exception();
+            dateOfBirth = dateConverter.dateToLong(date);
+        } catch (Exception e) {
+            CommonToasts.invalidDateEntered(this);
+            return;
+        }
+
+        Patient newPatient = new PatientObj(name, gender, username, password, dateOfBirth, new ArrayList<>());
+
+        dao.getPatient(username, dbPatient -> {
+            if (dbPatient == null) {
                 dao.getPatientsRef().child(username).setValue(newPatient);
-                Toast.makeText(view.getContext(), "Successfully created your account", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(view.getContext(), PatientDashboardActivity.class);
+                CommonToasts.signupSuccess(PatientSignupActivity.this, username);
+                Intent intent = new Intent(PatientSignupActivity.this, PatientDashboardActivity.class);
                 intent.putExtra(PatientDashboardActivity.KEY_PATIENT, username);
                 startActivity(intent);
             } else {
@@ -125,7 +133,7 @@ public class PatientSignupActivity extends AppCompatActivity {
     }
 
     public void loginAction(View view) {
-        Intent intent = new Intent(view.getContext(), PatientLoginActivity.class);
+        Intent intent = new Intent(PatientSignupActivity.this, PatientLoginActivity.class);
         startActivity(intent);
     }
 }

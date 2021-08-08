@@ -33,6 +33,14 @@ public class CommonToasts {
     }
 
     public static void loginSuccess(Context context, String username) {
-        Toast.makeText(context, String.format("Successfully logged in as %s", username), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, String.format("Successfully logged in as %s!", username), Toast.LENGTH_LONG).show();
+    }
+
+    public static void signupSuccess(Context context, String username) {
+        Toast.makeText(context, String.format("Successfully signed up %s!", username), Toast.LENGTH_LONG).show();
+    }
+
+    public static void invalidDateEntered(Context context) {
+        Toast.makeText(context, "Please enter a valid date!", Toast.LENGTH_LONG).show();
     }
 }

@@ -166,6 +166,7 @@
             android:inputType="textCapSentences"
             android:onClick="loginAction"
             android:text="Have an account? Click here to login."
+            android:textAllCaps="false"
             android:textColor="@color/primary" />
 
     </LinearLayout>

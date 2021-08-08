@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DoctorSignupActivity extends AppCompatActivity {
+    private Toolbar toolbar;
+
     private EditText edtTxtName;
     private EditText edtTxtUsername;
     private EditText edtTxtPassword;
@@ -35,23 +37,35 @@ public class DoctorSignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_signup);
 
-        Toolbar toolbar = findViewById(R.id.toolbarDoctorSignup);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
+        toolbar = findViewById(R.id.toolbarDoctorSignup);
 
-        // Components
         edtTxtName = findViewById(R.id.edtTxtName);
         edtTxtUsername = findViewById(R.id.edtTxtUsername);
         edtTxtPassword = findViewById(R.id.edtTxtPassword);
+
         spnSpecializations = findViewById(R.id.spnSpecializations);
         spnGenders = findViewById(R.id.spnGenders);
 
-        // Initialize spinner contents
-        ArrayList<String> genders = new ArrayList<>(UserGenders.getGenders());
-        ArrayList<String> specializations = new ArrayList<>(DoctorSpecializations.getSpecializations());
+        initializeToolbar();
+        initializeSpinners();
+    }
 
-        // Initialize spinners
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    private void initializeToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
+    }
+
+    private void initializeSpinners() {
+        List<String> genders = new ArrayList<>(UserGenders.getGenders());
+        List<String> specializations = new ArrayList<>(DoctorSpecializations.getSpecializations());
+
         ArrayAdapter<String> specializationsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, specializations);
         specializationsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnSpecializations.setAdapter(specializationsAdapter);
@@ -61,17 +75,13 @@ public class DoctorSignupActivity extends AppCompatActivity {
         spnGenders.setAdapter(gendersAdapter);
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
     public void signupAction(View view) {
         ClinicDao dao = new ClinicFirebaseDao();
         String name = edtTxtName.getText().toString().trim();
         String password = edtTxtPassword.getText().toString();
         String username = edtTxtUsername.getText().toString().trim();
+        String gender = spnGenders.getSelectedItem().toString();
+        String specialization = spnSpecializations.getSelectedItem().toString();
 
         if (name.length() == 0 || username.length() == 0 || password.length() == 0) {
             CommonToasts.emptyFieldsError(this);
@@ -82,18 +92,16 @@ public class DoctorSignupActivity extends AppCompatActivity {
             dao.validateUsername(username);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            return;
         }
 
-        List<String> appointments = new ArrayList<>();
-        String gender = spnGenders.getSelectedItem().toString();
-        String specialization = spnSpecializations.getSelectedItem().toString();
-        Doctor enteredDoctor = new DoctorObj(name, gender, username, password, specialization, appointments, true);
+        Doctor enteredDoctor = new DoctorObj(name, gender, username, password, specialization, new ArrayList<>(), true);
 
         dao.getDoctor(username, doctor -> {
             if (doctor == null) {
                 dao.getDoctorsRef().child(username).setValue(enteredDoctor);
-                Toast.makeText(view.getContext(), "Successfully created your account: " + username, Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(view.getContext(), DoctorDashboardActivity.class);
+                CommonToasts.signupSuccess(DoctorSignupActivity.this, username);
+                Intent intent = new Intent(DoctorSignupActivity.this, DoctorDashboardActivity.class);
                 intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
                 startActivity(intent);
             } else {
@@ -103,7 +111,7 @@ public class DoctorSignupActivity extends AppCompatActivity {
     }
 
     public void loginAction(View view) {
-        Intent intent = new Intent(view.getContext(), DoctorLoginActivity.class);
+        Intent intent = new Intent(DoctorSignupActivity.this, DoctorLoginActivity.class);
         startActivity(intent);
     }
 }
