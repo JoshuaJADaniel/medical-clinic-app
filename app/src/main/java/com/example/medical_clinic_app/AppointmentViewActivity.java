@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
-import com.example.medical_clinic_app.utils.ErrorToasts;
+import com.example.medical_clinic_app.utils.CommonToasts;
 
 public class AppointmentViewActivity extends AppCompatActivity {
     public static final String KEY_TIME = "KEY_TIME";
@@ -62,7 +62,7 @@ public class AppointmentViewActivity extends AppCompatActivity {
 
         dao.getPatient(username, patient -> {
             if (patient == null) {
-                ErrorToasts.databasePatientError(AppointmentViewActivity.this);
+                CommonToasts.databasePatientError(AppointmentViewActivity.this);
             } else {
                 txtPatientName.setText(patient.getName());
                 txtPatientGender.setText(patient.getGender());
@@ -80,7 +80,7 @@ public class AppointmentViewActivity extends AppCompatActivity {
 
         dao.getDoctor(username, doctor -> {
             if (doctor == null) {
-                ErrorToasts.databaseDoctorError(AppointmentViewActivity.this);
+                CommonToasts.databaseDoctorError(AppointmentViewActivity.this);
             } else {
                 txtDoctorName.setText(doctor.getName());
                 txtDoctorGender.setText(doctor.getGender());

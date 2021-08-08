@@ -16,7 +16,7 @@ import com.example.medical_clinic_app.appointment.Appointment;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
-import com.example.medical_clinic_app.utils.ErrorToasts;
+import com.example.medical_clinic_app.utils.CommonToasts;
 import com.example.medical_clinic_app.utils.FormatPatientsAppointment;
 
 import java.time.LocalDateTime;
@@ -61,7 +61,7 @@ public class PatientDashboardActivity extends AppCompatActivity {
         patientUsername = intent.getStringExtra(KEY_PATIENT);
 
         if (patientUsername == null) {
-            ErrorToasts.databasePatientError(this);
+            CommonToasts.databasePatientError(this);
         } else {
             setAppointmentsAdapter();
             populateDashboard();
@@ -74,14 +74,14 @@ public class PatientDashboardActivity extends AppCompatActivity {
 
         dao.getPatient(patientUsername, patient -> {
             if (patient.getAppointments() == null) {
-                ErrorToasts.databasePatientError(PatientDashboardActivity.this);
+                CommonToasts.databasePatientError(PatientDashboardActivity.this);
                 return;
             }
 
             for (String id : patient.getAppointments()) {
                 dao.getAppointment(id, appointment -> {
                     if (appointment == null) {
-                        ErrorToasts.databaseAppointmentError(PatientDashboardActivity.this);
+                        CommonToasts.databaseAppointmentError(PatientDashboardActivity.this);
                         return;
                     }
 

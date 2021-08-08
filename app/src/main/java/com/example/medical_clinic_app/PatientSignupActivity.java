@@ -17,7 +17,7 @@ import com.example.medical_clinic_app.time.DateConverter;
 import com.example.medical_clinic_app.user.Patient;
 import com.example.medical_clinic_app.user.PatientObj;
 import com.example.medical_clinic_app.user.UserGenders;
-import com.example.medical_clinic_app.utils.ErrorToasts;
+import com.example.medical_clinic_app.utils.CommonToasts;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class PatientSignupActivity extends AppCompatActivity {
 
         if (name.length() == 0 || username.length() == 0 || password.length() == 0 ||
                 dayOfBirth.length() == 0 || monthOfBirth.length() == 0 || yearOfBirth.length() == 0) {
-            ErrorToasts.emptyFieldsError(this);
+            CommonToasts.emptyFieldsError(this);
             return;
         }
 
@@ -119,7 +119,7 @@ public class PatientSignupActivity extends AppCompatActivity {
                 intent.putExtra(PatientDashboardActivity.KEY_PATIENT, username);
                 startActivity(intent);
             } else {
-                ErrorToasts.usernameTaken(PatientSignupActivity.this);
+                CommonToasts.usernameTaken(PatientSignupActivity.this);
             }
         });
     }

@@ -7,14 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.medical_clinic_app.adapters.AdapterRecyclerDoctorsAvailable;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
 import com.example.medical_clinic_app.user.Doctor;
-import com.example.medical_clinic_app.utils.ErrorToasts;
+import com.example.medical_clinic_app.utils.CommonToasts;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class PatientPastDoctorsActivity extends AppCompatActivity {
         DateConverter dateConverter = dao.defaultDateConverter();
         dao.getPatient(patientUsername, patient -> {
             if (patient == null) {
-                ErrorToasts.databasePatientError(PatientPastDoctorsActivity.this);
+                CommonToasts.databasePatientError(PatientPastDoctorsActivity.this);
                 return;
             }
 
@@ -69,11 +68,11 @@ public class PatientPastDoctorsActivity extends AppCompatActivity {
             for (String id : patient.getAppointments()) {
                 dao.getAppointment(id, appointment -> {
                     if (appointment == null) {
-                        ErrorToasts.databaseAppointmentError(PatientPastDoctorsActivity.this);
+                        CommonToasts.databaseAppointmentError(PatientPastDoctorsActivity.this);
                     } else if (appointment.getDate() < dateConverter.dateToLong(LocalDateTime.now())) {
                         dao.getDoctor(appointment.getDoctor(), doctor -> {
                             if (doctor == null) {
-                                ErrorToasts.databaseDoctorError(PatientPastDoctorsActivity.this);
+                                CommonToasts.databaseDoctorError(PatientPastDoctorsActivity.this);
                             } else if (!addedDoctors.contains(doctor.getUsername())) {
                                 pastDoctors.add(doctor);
                                 adapterDoctorList.notifyItemInserted(pastDoctors.size() - 1);

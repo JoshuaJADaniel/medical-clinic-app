@@ -17,7 +17,7 @@ import com.example.medical_clinic_app.user.Doctor;
 import com.example.medical_clinic_app.user.DoctorObj;
 import com.example.medical_clinic_app.user.DoctorSpecializations;
 import com.example.medical_clinic_app.user.UserGenders;
-import com.example.medical_clinic_app.utils.ErrorToasts;
+import com.example.medical_clinic_app.utils.CommonToasts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class DoctorSignupActivity extends AppCompatActivity {
         String username = edtTxtUsername.getText().toString().trim();
 
         if (name.length() == 0 || username.length() == 0 || password.length() == 0) {
-            ErrorToasts.emptyFieldsError(this);
+            CommonToasts.emptyFieldsError(this);
             return;
         }
 
@@ -97,7 +97,7 @@ public class DoctorSignupActivity extends AppCompatActivity {
                 intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
                 startActivity(intent);
             } else {
-                ErrorToasts.usernameTaken(DoctorSignupActivity.this);
+                CommonToasts.usernameTaken(DoctorSignupActivity.this);
             }
         });
     }

@@ -17,7 +17,7 @@ import android.content.Intent;
 
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
-import com.example.medical_clinic_app.utils.ErrorToasts;
+import com.example.medical_clinic_app.utils.CommonToasts;
 import com.example.medical_clinic_app.utils.FormatDoctorsAppointment;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class DoctorDashboardActivity extends AppCompatActivity {
         doctorUsername = intent.getStringExtra(KEY_DOCTOR);
 
         if (doctorUsername == null) {
-            ErrorToasts.databaseDoctorError(this);
+            CommonToasts.databaseDoctorError(this);
         } else {
             setAppointmentsAdapter();
             populateDashBoard();
@@ -58,14 +58,14 @@ public class DoctorDashboardActivity extends AppCompatActivity {
 
         dao.getDoctor(doctorUsername, doctor -> {
             if (doctor.getAppointments() == null) {
-                ErrorToasts.databasePatientError(DoctorDashboardActivity.this);
+                CommonToasts.databasePatientError(DoctorDashboardActivity.this);
                 return;
             }
 
             for (String id : doctor.getAppointments()) {
                 dao.getAppointment(id, appointment -> {
                     if (appointment == null) {
-                        ErrorToasts.databaseAppointmentError(DoctorDashboardActivity.this);
+                        CommonToasts.databaseAppointmentError(DoctorDashboardActivity.this);
                         return;
                     }
 

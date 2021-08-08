@@ -27,7 +27,7 @@ import android.widget.Spinner;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.user.DoctorSpecializations;
 import com.example.medical_clinic_app.user.UserGenders;
-import com.example.medical_clinic_app.utils.ErrorToasts;
+import com.example.medical_clinic_app.utils.CommonToasts;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -134,7 +134,7 @@ public class AvailableDoctorListActivity extends AppCompatActivity {
                     Doctor doctor = datasnapshot.getValue(DoctorObj.class);
 
                     if (doctor == null) {
-                        ErrorToasts.databaseDoctorError(AvailableDoctorListActivity.this);
+                        CommonToasts.databaseDoctorError(AvailableDoctorListActivity.this);
                         return;
                     }
 
@@ -149,7 +149,7 @@ public class AvailableDoctorListActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e(null, error.toString());
-                ErrorToasts.databaseDoctorError(AvailableDoctorListActivity.this);
+                CommonToasts.databaseDoctorError(AvailableDoctorListActivity.this);
             }
         });
 

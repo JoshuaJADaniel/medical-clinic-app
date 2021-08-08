@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
-import com.example.medical_clinic_app.utils.ErrorToasts;
+import com.example.medical_clinic_app.utils.CommonToasts;
 
 public class PatientLoginActivity extends AppCompatActivity {
     @Override
@@ -35,13 +35,13 @@ public class PatientLoginActivity extends AppCompatActivity {
             String username = txtUsername.getText().toString().trim();
 
             if (username.length() == 0 || password.length() == 0) {
-                ErrorToasts.emptyFieldsError(PatientLoginActivity.this);
+                CommonToasts.emptyFieldsError(PatientLoginActivity.this);
                 return;
             }
 
             dao.getPatient(username, patient -> {
                 if (patient == null || !patient.getPassword().equals(password)) {
-                    ErrorToasts.usernamePasswordError(PatientLoginActivity.this);
+                    CommonToasts.usernamePasswordError(PatientLoginActivity.this);
                 } else {
                     Toast.makeText(PatientLoginActivity.this, "Successfully logged in as " + username, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(PatientLoginActivity.this, PatientDashboardActivity.class);

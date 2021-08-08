@@ -3,7 +3,7 @@ package com.example.medical_clinic_app.utils;
 import android.content.Context;
 import android.widget.Toast;
 
-public class ErrorToasts {
+public class CommonToasts {
     public static void databaseDoctorError(Context context) {
         databaseError(context, "Could not retrieve doctor from database");
     }
@@ -30,5 +30,9 @@ public class ErrorToasts {
 
     public static void usernameTaken(Context context) {
         Toast.makeText(context, "Sorry, that username is already taken!", Toast.LENGTH_LONG).show();
+    }
+
+    public static void loginSuccess(Context context, String username) {
+        Toast.makeText(context, String.format("Successfully logged in as %s", username), Toast.LENGTH_LONG).show();
     }
 }
