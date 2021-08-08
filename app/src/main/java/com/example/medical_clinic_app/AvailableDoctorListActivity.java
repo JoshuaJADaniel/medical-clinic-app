@@ -10,47 +10,28 @@ import com.example.medical_clinic_app.user.Doctor;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.example.medical_clinic_app.user.Doctor;
+
 import com.example.medical_clinic_app.user.DoctorObj;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.example.medical_clinic_app.adapters.AdapterRecyclerAppointments;
-import com.example.medical_clinic_app.appointment.Appointment;
-import com.example.medical_clinic_app.appointment.GeneralAppointment;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
-import com.example.medical_clinic_app.time.DateConverter;
-import com.example.medical_clinic_app.user.Patient;
-import com.example.medical_clinic_app.user.PatientObj;
-import com.example.medical_clinic_app.utils.FormatPatientsAppointment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-public class BookNewAppointmentActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class AvailableDoctorListActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private List<Doctor> DoctorList;
     private Doctor doctor;
 
@@ -66,7 +47,7 @@ public class BookNewAppointmentActivity extends AppCompatActivity implements Ada
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_new_appointment);
+        setContentView(R.layout.activity_available_doctor_list);
         setUpGenderList();
         setUpSpecializationList();
 

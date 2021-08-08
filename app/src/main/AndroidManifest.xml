@@ -13,10 +13,7 @@
             android:name=".AppointmentViewActivity"
             android:exported="true" />
         <activity
-            android:name=".DoctorAvailabilityListActivity"
-            android:exported="true" />
-        <activity
-            android:name=".BookNewAppointmentActivity"
+            android:name=".AvailableDoctorListActivity"
             android:exported="true" />
         <activity
             android:name=".PatientDashboardActivity"
