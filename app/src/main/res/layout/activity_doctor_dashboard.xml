@@ -6,4 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".DoctorDashboardActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerDoctorAppointments"
+        android:layout_width="373dp"
+        android:layout_height="506dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtAppointmentsPromptDoctorDashBoard" />
+
+    <TextView
+        android:id="@+id/txtAppointmentsPromptDoctorDashBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Appointments"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarDoctorDashboard2" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarDoctorDashboard2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Doctor Dashboard"
+        app:titleTextColor="@color/white" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
