@@ -5,11 +5,11 @@ public class GeneralAppointment implements Appointment {
     private String patient;
     private String doctor;
 
-    public void Appointment() {
+    public GeneralAppointment() {
 
     }
 
-    public void Appointment(long date, String patient, String doctor) {
+    public GeneralAppointment(long date, String patient, String doctor) {
         this.date = date;
         this.patient = patient;
         this.doctor = doctor;
