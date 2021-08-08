@@ -25,13 +25,13 @@ public class AdapterRecyclerDoctorsAvailable extends RecyclerView.Adapter<Adapte
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView txtName;
         private final TextView txtGender;
-        private final TextView txtSpecialties;
+        private final TextView txtSpecialization;
 
         public MyViewHolder(View view) {
             super(view);
             txtName = view.findViewById(R.id.txtName);
             txtGender = view.findViewById(R.id.txtGender);
-            txtSpecialties = view.findViewById(R.id.txtSpecialties);
+            txtSpecialization = view.findViewById(R.id.txtSpecialization);
         }
     }
 
@@ -45,9 +45,9 @@ public class AdapterRecyclerDoctorsAvailable extends RecyclerView.Adapter<Adapte
     @Override
     public void onBindViewHolder(@NonNull AdapterRecyclerDoctorsAvailable.MyViewHolder holder, int position) {
         Doctor doctor = doctors.get(position);
-        holder.txtName.setText(doctor.getName());
         holder.txtGender.setText(doctor.getGender());
-        holder.txtSpecialties.setText(doctor.getSpecialization());
+        holder.txtSpecialization.setText(doctor.getSpecialization());
+        holder.txtName.setText(String.format("Dr. %s", doctor.getName()));
     }
 
     @Override
