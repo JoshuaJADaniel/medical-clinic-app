@@ -7,28 +7,49 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.utils.CommonToasts;
 
 public class DoctorLoginActivity extends AppCompatActivity {
+    private TextView txtUsername;
+    private TextView txtPassword;
+
+    private Button btnLogin;
+    private Button btnSignup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        txtUsername = findViewById(R.id.edtTxtUsername);
+        txtPassword = findViewById(R.id.edtTxtPassword);
+
+        btnLogin = findViewById(R.id.btnLogin);
+        btnSignup = findViewById(R.id.btnSignup);
+
+        initializeToolbar();
+        initializeBtnLogin();
+        initializeBtnSignup();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    private void initializeToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbarLogin);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Doctor Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
+    }
 
-        TextView txtUsername = findViewById(R.id.edtTxtName);
-        TextView txtPassword = findViewById(R.id.edtTxtPassword);
-
-        Button btnLogin = findViewById(R.id.btnLogin);
+    private void initializeBtnLogin() {
         btnLogin.setOnClickListener(view -> {
             ClinicDao dao = new ClinicFirebaseDao();
             String password = txtPassword.getText().toString();
@@ -43,24 +64,19 @@ public class DoctorLoginActivity extends AppCompatActivity {
                 if (doctor == null || !doctor.getPassword().equals(password)) {
                     CommonToasts.usernamePasswordError(DoctorLoginActivity.this);
                 } else {
-                    Toast.makeText(DoctorLoginActivity.this, "Successfully logged in as " + username, Toast.LENGTH_LONG).show();
+                    CommonToasts.loginSuccess(DoctorLoginActivity.this, username);
                     Intent intent = new Intent(DoctorLoginActivity.this, DoctorDashboardActivity.class);
                     intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
                     startActivity(intent);
                 }
             });
         });
+    }
 
-        Button btnSignup = findViewById(R.id.btnSignup);
+    private void initializeBtnSignup() {
         btnSignup.setOnClickListener(view -> {
             Intent intent = new Intent(DoctorLoginActivity.this, DoctorSignupActivity.class);
             startActivity(intent);
         });
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 }
