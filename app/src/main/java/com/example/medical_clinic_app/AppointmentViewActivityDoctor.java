@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.medical_clinic_app.adapters.AdapterRecyclerPreviouslySeenDoctors;
 import com.example.medical_clinic_app.appointment.Appointment;
 import com.example.medical_clinic_app.appointment.GeneralAppointment;
 import com.example.medical_clinic_app.services.ClinicDao;
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 
 import com.example.medical_clinic_app.adapters.AdapterRecyclerDoctorsAvailable;
+import com.example.medical_clinic_app.adapters.AdapterRecyclerPreviouslySeenDoctors;
+
 import com.example.medical_clinic_app.user.Doctor;
 
 import java.time.LocalDateTime;
@@ -54,7 +57,7 @@ public class AppointmentViewActivityDoctor extends AppCompatActivity{
     private List<Doctor> doctorList;
 
     private RecyclerView recyclerDoctorList;
-    private AdapterRecyclerDoctorsAvailable adapterDoctorList;
+    private AdapterRecyclerPreviouslySeenDoctors adapterDoctorList;
 
 
 
@@ -163,7 +166,7 @@ public class AppointmentViewActivityDoctor extends AppCompatActivity{
     }
 
     private void setDoctorAdapter() {
-        adapterDoctorList = new AdapterRecyclerDoctorsAvailable(doctorList, patientUsername);
+        adapterDoctorList = new AdapterRecyclerPreviouslySeenDoctors(doctorList, patientUsername);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerDoctorList.setItemAnimator(new DefaultItemAnimator());
         recyclerDoctorList.setLayoutManager(layoutManager);
