@@ -22,10 +22,18 @@ import java.util.List;
 public class AdapterRecyclerAppointments extends RecyclerView.Adapter<AdapterRecyclerAppointments.MyViewHolder> {
     private final List<Appointment> appointments;
     private final FormatUsersAppointmentStrategy userFormatStrategy;
+    private final boolean isDoctor;
 
     public AdapterRecyclerAppointments(List<Appointment> appointments, FormatUsersAppointmentStrategy userFormatStrategy) {
         this.appointments = appointments;
         this.userFormatStrategy = userFormatStrategy;
+        this.isDoctor = false;
+    }
+
+    public AdapterRecyclerAppointments(List<Appointment> appointments, FormatUsersAppointmentStrategy userFormatStrategy, boolean isDoctor) {
+        this.appointments = appointments;
+        this.userFormatStrategy = userFormatStrategy;
+        this.isDoctor = isDoctor;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -36,6 +44,7 @@ public class AdapterRecyclerAppointments extends RecyclerView.Adapter<AdapterRec
         private long date;
         private String doctor;
         private String patient;
+        private boolean isDoctor;
 
         public MyViewHolder(View view) {
             super(view);
@@ -45,16 +54,13 @@ public class AdapterRecyclerAppointments extends RecyclerView.Adapter<AdapterRec
             txtUser = view.findViewById(R.id.txtUser);
 
             view.setOnClickListener(innerView -> {
+                Intent intent = new Intent(view.getContext(), AppointmentViewActivity.class);
 
-                    Intent intent = new Intent(view.getContext(), AppointmentViewActivity.class);
-
-                    intent.putExtra(AppointmentViewActivity.KEY_PATIENT, patient);
-                    intent.putExtra(AppointmentViewActivity.KEY_DOCTOR, doctor);
-                    intent.putExtra(AppointmentViewActivity.KEY_TIME, date);
-                    view.getContext().startActivity(intent);
-
-
-
+                intent.putExtra(AppointmentViewActivity.KEY_IS_DOCTOR, isDoctor);
+                intent.putExtra(AppointmentViewActivity.KEY_PATIENT, patient);
+                intent.putExtra(AppointmentViewActivity.KEY_DOCTOR, doctor);
+                intent.putExtra(AppointmentViewActivity.KEY_TIME, date);
+                view.getContext().startActivity(intent);
             });
         }
     }
@@ -69,6 +75,7 @@ public class AdapterRecyclerAppointments extends RecyclerView.Adapter<AdapterRec
     public void onBindViewHolder(@NonNull AdapterRecyclerAppointments.MyViewHolder holder, int position) {
         Appointment appointment = appointments.get(position);
 
+        holder.isDoctor = isDoctor;
         holder.date = appointment.getDate();
         holder.doctor = appointment.getDoctor();
         holder.patient = appointment.getPatient();

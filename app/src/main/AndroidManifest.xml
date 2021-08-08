@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Medicalclinicapp">
         <activity
+            android:name=".PatientPastDoctorsActivity"
+            android:exported="true" />
+        <activity
             android:name=".AppointmentViewActivity"
             android:exported="true" />
         <activity
@@ -45,7 +48,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AppointmentViewActivityDoctor" />
     </application>
 
 </manifest>

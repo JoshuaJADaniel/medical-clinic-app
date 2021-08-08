@@ -140,4 +140,10 @@ public class PatientDashboardActivity extends AppCompatActivity {
         intent.putExtra(AvailableDoctorListActivity.KEY_PATIENT, patientUsername);
         startActivity(intent);
     }
+
+    public void transferToPastDoctors(View view) {
+        Intent intent = new Intent(this, PatientPastDoctorsActivity.class);
+        intent.putExtra(PatientPastDoctorsActivity.KEY_PATIENT, patientUsername);
+        startActivity(intent);
+    }
 }

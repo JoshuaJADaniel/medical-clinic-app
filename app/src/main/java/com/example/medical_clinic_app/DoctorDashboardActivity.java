@@ -4,46 +4,32 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.medical_clinic_app.adapters.AdapterRecyclerAppointments;
 import com.example.medical_clinic_app.appointment.Appointment;
 
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.ToggleButton;
 
-import com.example.medical_clinic_app.adapters.AdapterRecyclerAppointmentsForDoctorDashboard;
-import com.example.medical_clinic_app.appointment.Appointment;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
-import com.example.medical_clinic_app.time.DateConverter;
 import com.example.medical_clinic_app.utils.ErrorToasts;
 import com.example.medical_clinic_app.utils.FormatDoctorsAppointment;
-import com.example.medical_clinic_app.utils.FormatPatientsAppointment;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+
 public class DoctorDashboardActivity extends AppCompatActivity {
     public static final String KEY_DOCTOR = "KEY_DOCTOR";
 
+    private String doctorUsername;
     private List<Appointment> upcomingAppointments;
 
     private RecyclerView recyclerUpcomingAppointments;
-
-    private AdapterRecyclerAppointmentsForDoctorDashboard adapterRecyclerUpcomingAppointments;
-
-    private String doctorUsername;
-
-
-
+    private AdapterRecyclerAppointments adapterRecyclerUpcomingAppointments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +43,9 @@ public class DoctorDashboardActivity extends AppCompatActivity {
         Intent intent = getIntent();
         doctorUsername = intent.getStringExtra(KEY_DOCTOR);
 
-        if(doctorUsername == null){
+        if (doctorUsername == null) {
             ErrorToasts.databaseDoctorError(this);
-        }else{
+        } else {
             setAppointmentsAdapter();
             populateDashBoard();
         }
@@ -92,14 +78,11 @@ public class DoctorDashboardActivity extends AppCompatActivity {
 
     }
 
-
     private void setAppointmentsAdapter() {
-        adapterRecyclerUpcomingAppointments = new AdapterRecyclerAppointmentsForDoctorDashboard(upcomingAppointments, new FormatDoctorsAppointment());
+        adapterRecyclerUpcomingAppointments = new AdapterRecyclerAppointments(upcomingAppointments, new FormatDoctorsAppointment(), true);
         recyclerUpcomingAppointments.setAdapter(adapterRecyclerUpcomingAppointments);
         recyclerUpcomingAppointments.setItemAnimator(new DefaultItemAnimator());
         recyclerUpcomingAppointments.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     }
-
-
 }
 

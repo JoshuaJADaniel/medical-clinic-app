@@ -36,7 +36,13 @@ public class AppointmentViewActivity extends AppCompatActivity {
         populateTime(intent.getLongExtra(KEY_TIME, 0));
 
         Button btnPastDoctors = findViewById(R.id.btnPastDoctors);
-        if (!intent.getBooleanExtra(KEY_IS_DOCTOR, false)) {
+        if (intent.getBooleanExtra(KEY_IS_DOCTOR, false)) {
+            btnPastDoctors.setOnClickListener(view -> {
+                Intent nextIntent = new Intent(AppointmentViewActivity.this, PatientPastDoctorsActivity.class);
+                nextIntent.putExtra(PatientPastDoctorsActivity.KEY_PATIENT, intent.getStringExtra(KEY_PATIENT));
+                startActivity(nextIntent);
+            });
+        } else {
             btnPastDoctors.setVisibility(View.GONE);
         }
     }
