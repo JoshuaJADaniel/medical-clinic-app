@@ -26,46 +26,35 @@ import java.util.List;
 public class PatientDashboardActivity extends AppCompatActivity {
     public static final String KEY_PATIENT = "KEY_PATIENT";
 
-    private ToggleButton btnTogglePast;
-
-    private List<Appointment> pastAppointments;
-    private List<Appointment> upcomingAppointments;
-
-    private TextView txtPastEmpty;
-    private TextView txtUpcomingEmpty;
-
-    private RecyclerView recyclerPastAppointments;
-    private RecyclerView recyclerUpcomingAppointments;
-    private AdapterRecyclerAppointments adapterRecyclerPastAppointments;
-    private AdapterRecyclerAppointments adapterRecyclerUpcomingAppointments;
-
     private String patientUsername;
+    private final String emptyRecyclerMessage = "You have no appointments, book on below!";
+    private final String filledRecyclerMessage = "Click on any row below to view more details";
+
+    private final List<Appointment> pastAppointments = new ArrayList<>();
+    private final List<Appointment> upcomingAppointments = new ArrayList<>();
+    private final List<Appointment> visibleAppointments = new ArrayList<>();
+
+    private TextView txtRecyclerMessage;
+    private RecyclerView recyclerAppointments;
+    private AdapterRecyclerAppointments adapterRecyclerAppointments;
+
+    private ToggleButton btnTogglePast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_dashboard);
 
-        pastAppointments = new ArrayList<>();
-        upcomingAppointments = new ArrayList<>();
-
-        btnTogglePast = findViewById(R.id.btnTogglePast);
-
-        txtPastEmpty = findViewById(R.id.txtPastEmpty);
-        txtUpcomingEmpty = findViewById(R.id.txtUpcomingEmpty);
-
-        recyclerPastAppointments = findViewById(R.id.recyclerAppointmentsPast);
-        recyclerUpcomingAppointments = findViewById(R.id.recyclerAppointmentsUpcoming);
-
         Intent intent = getIntent();
         patientUsername = intent.getStringExtra(KEY_PATIENT);
 
-        if (patientUsername == null) {
-            CommonToasts.databasePatientError(this);
-        } else {
-            setAppointmentsAdapter();
-            populateDashboard();
-        }
+        btnTogglePast = findViewById(R.id.btnTogglePast);
+        recyclerAppointments = findViewById(R.id.recyclerAppointments);
+        txtRecyclerMessage = findViewById(R.id.txtRecyclerMessage);
+        txtRecyclerMessage.setText(emptyRecyclerMessage);
+
+        setAppointmentsAdapter();
+        populateDashboard();
     }
 
     private void populateDashboard() {
@@ -90,13 +79,11 @@ public class PatientDashboardActivity extends AppCompatActivity {
 
                     if (appointmentDate.isBefore(now)) {
                         pastAppointments.add(appointment);
-                        adapterRecyclerPastAppointments.notifyItemInserted(pastAppointments.size() - 1);
                     } else {
+                        visibleAppointments.add(appointment);
                         upcomingAppointments.add(appointment);
-                        adapterRecyclerUpcomingAppointments.notifyItemInserted(upcomingAppointments.size() - 1);
-
-                        txtUpcomingEmpty.setVisibility(View.INVISIBLE);
-                        recyclerUpcomingAppointments.setVisibility(View.VISIBLE);
+                        adapterRecyclerAppointments.notifyItemInserted(visibleAppointments.size() - 1);
+                        txtRecyclerMessage.setText(filledRecyclerMessage);
                     }
                 });
             }
@@ -104,35 +91,17 @@ public class PatientDashboardActivity extends AppCompatActivity {
     }
 
     private void setAppointmentsAdapter() {
-        adapterRecyclerPastAppointments = new AdapterRecyclerAppointments(pastAppointments, new FormatPatientsAppointment());
-        recyclerPastAppointments.setAdapter(adapterRecyclerPastAppointments);
-        recyclerPastAppointments.setItemAnimator(new DefaultItemAnimator());
-        recyclerPastAppointments.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-        adapterRecyclerUpcomingAppointments = new AdapterRecyclerAppointments(upcomingAppointments, new FormatPatientsAppointment());
-        recyclerUpcomingAppointments.setAdapter(adapterRecyclerUpcomingAppointments);
-        recyclerUpcomingAppointments.setItemAnimator(new DefaultItemAnimator());
-        recyclerUpcomingAppointments.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        adapterRecyclerAppointments = new AdapterRecyclerAppointments(visibleAppointments, new FormatPatientsAppointment());
+        recyclerAppointments.setAdapter(adapterRecyclerAppointments);
+        recyclerAppointments.setItemAnimator(new DefaultItemAnimator());
+        recyclerAppointments.setLayoutManager(new LinearLayoutManager(this));
     }
 
     public void togglePast(View view) {
-        if (btnTogglePast.isChecked()) {
-            txtUpcomingEmpty.setVisibility(View.INVISIBLE);
-            recyclerUpcomingAppointments.setVisibility(View.INVISIBLE);
-            if (pastAppointments.size() == 0) {
-                txtPastEmpty.setVisibility(View.VISIBLE);
-            } else {
-                recyclerPastAppointments.setVisibility(View.VISIBLE);
-            }
-        } else {
-            txtPastEmpty.setVisibility(View.INVISIBLE);
-            recyclerPastAppointments.setVisibility(View.INVISIBLE);
-            if (upcomingAppointments.size() == 0) {
-                txtUpcomingEmpty.setVisibility(View.VISIBLE);
-            } else {
-                recyclerUpcomingAppointments.setVisibility(View.VISIBLE);
-            }
-        }
+        visibleAppointments.clear();
+        visibleAppointments.addAll(btnTogglePast.isChecked() ? pastAppointments : upcomingAppointments);
+        txtRecyclerMessage.setText(visibleAppointments.size() == 0 ? emptyRecyclerMessage : filledRecyclerMessage);
+        adapterRecyclerAppointments.notifyDataSetChanged();
     }
 
     public void transferToBookAppointments(View view) {
