@@ -27,7 +27,7 @@ public interface ClinicDao {
     void getPatient(String username, PatientListener listener);
     void getAppointment(String id, AppointmentListener listener);
 
-    boolean addAppointment(Appointment appointment);
+    void addAppointment(Appointment appointment, AppointmentListener listener);
 
     void validateUsername(String username) throws Exception;
 
