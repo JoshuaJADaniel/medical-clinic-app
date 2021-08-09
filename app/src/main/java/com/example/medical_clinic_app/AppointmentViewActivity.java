@@ -108,10 +108,9 @@ public class AppointmentViewActivity extends AppCompatActivity {
         ClinicDao dao = new ClinicFirebaseDao();
         TextView txtDate = findViewById(R.id.txtDate);
         DateConverter dateConverter = dao.defaultDateConverter();
-        txtDate.setText(String.format("%s at %s %s",
+        txtDate.setText(String.format("%s at %s",
                 dateConverter.getFormattedDate(appointmentTime),
-                dateConverter.getFormattedTime(appointmentTime),
-                dateConverter.getLocale()
+                dateConverter.getFormattedTime(appointmentTime)
         ));
     }
 }
