@@ -2,6 +2,7 @@ package com.example.medical_clinic_app.user;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DoctorObj implements Doctor {
@@ -105,6 +106,7 @@ public class DoctorObj implements Doctor {
 
     @Override
     public void addToAppointments(String id) {
+        if (appointments == null) appointments = new ArrayList<>();
         appointments.add(id);
     }
 
