@@ -28,7 +28,7 @@ public class DoctorDashboardActivity extends AppCompatActivity {
     public static final String KEY_DOCTOR = "KEY_DOCTOR";
 
     private String doctorUsername;
-    private final String emptyRecyclerMessage = "You have no appointments, book on below!";
+    private final String emptyRecyclerMessage = "You have no appointments!";
     private final String filledRecyclerMessage = "Click on any row below to view more details";
 
     private final List<Appointment> pastAppointments = new ArrayList<>();
@@ -96,7 +96,7 @@ public class DoctorDashboardActivity extends AppCompatActivity {
     }
 
     private void setAppointmentsAdapter() {
-        adapterRecyclerAppointments = new AdapterRecyclerAppointments(visibleAppointments, new FormatDoctorsAppointment());
+        adapterRecyclerAppointments = new AdapterRecyclerAppointments(visibleAppointments, new FormatDoctorsAppointment(), true);
         recyclerAppointments.setAdapter(adapterRecyclerAppointments);
         recyclerAppointments.setItemAnimator(new DefaultItemAnimator());
         recyclerAppointments.setLayoutManager(new LinearLayoutManager(this));
