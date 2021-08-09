@@ -62,8 +62,12 @@ public class PatientDashboardActivity extends AppCompatActivity {
         DateConverter dateConverter = dao.defaultDateConverter();
 
         dao.getPatient(patientUsername, patient -> {
-            if (patient.getAppointments() == null) {
+            if (patient == null) {
                 CommonToasts.databasePatientError(PatientDashboardActivity.this);
+                return;
+            }
+
+            if (patient.getAppointments() == null) {
                 return;
             }
 
