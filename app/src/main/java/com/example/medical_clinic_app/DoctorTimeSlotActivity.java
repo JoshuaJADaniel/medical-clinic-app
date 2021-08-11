@@ -33,8 +33,8 @@ public class DoctorTimeSlotActivity extends AppCompatActivity {
 
 
         calendarDaysDoctor = findViewById(R.id.calendarDaysDoctor);
-        //calendarDaysDoctor.setMinDate(System.currentTimeMillis());
-        //calendarDaysDoctor.setMaxDate(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000);
+        calendarDaysDoctor.setMinDate(System.currentTimeMillis());
+        calendarDaysDoctor.setMaxDate(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000);
 
         calendarDaysDoctor.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
