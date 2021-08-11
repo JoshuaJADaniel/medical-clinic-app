@@ -41,7 +41,14 @@ public class DoctorDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_dashboard);
 
-
+        btnViewSchedule = findViewById(R.id.btnViewSchedule);
+        btnViewSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DoctorDashboardActivity.this, DoctorTimeSlotActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         upcomingAppointments = new ArrayList<>();
@@ -57,16 +64,6 @@ public class DoctorDashboardActivity extends AppCompatActivity {
             setAppointmentsAdapter();
             populateDashBoard();
         }
-
-        btnViewSchedule = findViewById(R.id.btnViewSchedule);
-        btnViewSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DoctorDashboardActivity.this, DoctorTimeSlotActivity.class);
-                intent.putExtra(KEY_DOCTOR, doctorUsername);
-                startActivity(intent);
-            }
-        });
 
 
     }
