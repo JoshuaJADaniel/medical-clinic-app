@@ -8,11 +8,12 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.utils.CommonToasts;
 
-public class PatientLoginActivity extends AppCompatActivity {
+public class PatientLoginActivity extends AppCompatActivity implements LoginContract.View {
+    private LoginContract.Presenter loginPresenter;
+
     private Toolbar toolbar;
 
     private TextView txtUsername;
@@ -25,6 +26,8 @@ public class PatientLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        loginPresenter = new PatientLoginPresenter(this, new ClinicFirebaseDao());
 
         toolbar = findViewById(R.id.toolbarLogin);
 
@@ -54,25 +57,7 @@ public class PatientLoginActivity extends AppCompatActivity {
 
     private void initializeBtnLogin() {
         btnLogin.setOnClickListener(view -> {
-            ClinicDao dao = new ClinicFirebaseDao();
-            String password = txtPassword.getText().toString();
-            String username = txtUsername.getText().toString().trim();
-
-            if (username.length() == 0 || password.length() == 0) {
-                CommonToasts.emptyFieldsError(PatientLoginActivity.this);
-                return;
-            }
-
-            dao.getPatient(username, patient -> {
-                if (patient == null || !patient.getPassword().equals(password)) {
-                    CommonToasts.usernamePasswordError(PatientLoginActivity.this);
-                } else {
-                    CommonToasts.loginSuccess(PatientLoginActivity.this, username);
-                    Intent intent = new Intent(PatientLoginActivity.this, PatientDashboardActivity.class);
-                    intent.putExtra(PatientDashboardActivity.KEY_PATIENT, username);
-                    startActivity(intent);
-                }
-            });
+            loginPresenter.validateLogin();
         });
     }
 
@@ -81,5 +66,33 @@ public class PatientLoginActivity extends AppCompatActivity {
             Intent intent = new Intent(PatientLoginActivity.this, PatientSignupActivity.class);
             startActivity(intent);
         });
+    }
+
+    @Override
+    public void loginFailed() {
+        CommonToasts.usernamePasswordError(this);
+    }
+
+    @Override
+    public void loginSuccess(String username) {
+        CommonToasts.loginSuccess(this, username);
+        Intent intent = new Intent(this, PatientDashboardActivity.class);
+        intent.putExtra(PatientDashboardActivity.KEY_PATIENT, username);
+        startActivity(intent);
+    }
+
+    @Override
+    public void emptyFieldsError() {
+        CommonToasts.emptyFieldsError(this);
+    }
+
+    @Override
+    public String getUsername() {
+        return txtUsername.getText().toString();
+    }
+
+    @Override
+    public String getPassword() {
+        return txtPassword.getText().toString();
     }
 }

@@ -8,11 +8,12 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.utils.CommonToasts;
 
-public class DoctorLoginActivity extends AppCompatActivity {
+public class DoctorLoginActivity extends AppCompatActivity implements LoginContract.View {
+    private LoginContract.Presenter loginPresenter;
+
     private Toolbar toolbar;
 
     private TextView txtUsername;
@@ -25,6 +26,8 @@ public class DoctorLoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        loginPresenter = new DoctorLoginPresenter(this, new ClinicFirebaseDao());
 
         toolbar = findViewById(R.id.toolbarLogin);
 
@@ -54,25 +57,7 @@ public class DoctorLoginActivity extends AppCompatActivity {
 
     private void initializeBtnLogin() {
         btnLogin.setOnClickListener(view -> {
-            ClinicDao dao = new ClinicFirebaseDao();
-            String password = txtPassword.getText().toString();
-            String username = txtUsername.getText().toString().trim();
-
-            if (username.length() == 0 || password.length() == 0) {
-                CommonToasts.emptyFieldsError(DoctorLoginActivity.this);
-                return;
-            }
-
-            dao.getDoctor(username, doctor -> {
-                if (doctor == null || !doctor.getPassword().equals(password)) {
-                    CommonToasts.usernamePasswordError(DoctorLoginActivity.this);
-                } else {
-                    CommonToasts.loginSuccess(DoctorLoginActivity.this, username);
-                    Intent intent = new Intent(DoctorLoginActivity.this, DoctorDashboardActivity.class);
-                    intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
-                    startActivity(intent);
-                }
-            });
+            loginPresenter.validateLogin();
         });
     }
 
@@ -81,5 +66,33 @@ public class DoctorLoginActivity extends AppCompatActivity {
             Intent intent = new Intent(DoctorLoginActivity.this, DoctorSignupActivity.class);
             startActivity(intent);
         });
+    }
+
+    @Override
+    public void loginFailed() {
+        CommonToasts.usernamePasswordError(this);
+    }
+
+    @Override
+    public void loginSuccess(String username) {
+        CommonToasts.loginSuccess(this, username);
+        Intent intent = new Intent(this, DoctorDashboardActivity.class);
+        intent.putExtra(DoctorDashboardActivity.KEY_DOCTOR, username);
+        startActivity(intent);
+    }
+
+    @Override
+    public void emptyFieldsError() {
+        CommonToasts.emptyFieldsError(this);
+    }
+
+    @Override
+    public String getUsername() {
+        return txtUsername.getText().toString();
+    }
+
+    @Override
+    public String getPassword() {
+        return txtPassword.getText().toString();
     }
 }
