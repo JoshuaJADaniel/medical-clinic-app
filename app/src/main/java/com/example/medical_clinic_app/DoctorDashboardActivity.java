@@ -1,82 +1,77 @@
 package com.example.medical_clinic_app;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-import com.example.medical_clinic_app.adapters.AdapterRecyclerAppointments;
-import com.example.medical_clinic_app.appointment.Appointment;
-
-import java.util.List;
-
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
+import com.example.medical_clinic_app.adapters.AdapterRecyclerAppointments;
+import com.example.medical_clinic_app.appointment.Appointment;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
+import com.example.medical_clinic_app.time.DateConverter;
 import com.example.medical_clinic_app.utils.CommonToasts;
 import com.example.medical_clinic_app.utils.FormatDoctorsAppointment;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DoctorDashboardActivity extends AppCompatActivity {
     public static final String KEY_DOCTOR = "KEY_DOCTOR";
 
     private String doctorUsername;
-    private List<Appointment> upcomingAppointments;
+    private final String emptyRecyclerMessage = "You have no appointments!";
+    private final String filledRecyclerMessage = "Click on any row below to view more details";
 
-    private RecyclerView recyclerUpcomingAppointments;
-    private AdapterRecyclerAppointments adapterRecyclerUpcomingAppointments;
+    private final List<Appointment> pastAppointments = new ArrayList<>();
+    private final List<Appointment> upcomingAppointments = new ArrayList<>();
+    private final List<Appointment> visibleAppointments = new ArrayList<>();
 
+    private TextView txtRecyclerMessage;
+    private RecyclerView recyclerAppointments;
+    private AdapterRecyclerAppointments adapterRecyclerAppointments;
+
+    private ToggleButton btnTogglePast;
     private Button btnViewSchedule;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_dashboard);
 
-
-
-
-        upcomingAppointments = new ArrayList<>();
-
-        recyclerUpcomingAppointments = findViewById(R.id.recyclerDoctorAppointments);
-
         Intent intent = getIntent();
         doctorUsername = intent.getStringExtra(KEY_DOCTOR);
 
-        if (doctorUsername == null) {
-            CommonToasts.databaseDoctorError(this);
-        } else {
-            setAppointmentsAdapter();
-            populateDashBoard();
-        }
+        btnTogglePast = findViewById(R.id.btnTogglePast);
+        recyclerAppointments = findViewById(R.id.recyclerAppointments);
+        txtRecyclerMessage = findViewById(R.id.txtRecyclerMessage);
+        txtRecyclerMessage.setText(emptyRecyclerMessage);
 
-        btnViewSchedule = findViewById(R.id.btnViewSchedule);
-        btnViewSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DoctorDashboardActivity.this, DoctorTimeSlotActivity.class);
-                intent.putExtra(KEY_DOCTOR, doctorUsername);
-                startActivity(intent);
-            }
-        });
-
-
+        setAppointmentsAdapter();
+        populateDashboard();
+        transferToSchedule();
     }
 
-    private void populateDashBoard() {
+    private void populateDashboard() {
         ClinicDao dao = new ClinicFirebaseDao();
+        DateConverter dateConverter = dao.defaultDateConverter();
 
         dao.getDoctor(doctorUsername, doctor -> {
+            if (doctor == null) {
+                CommonToasts.databaseDoctorError(DoctorDashboardActivity.this);
+                return;
+            }
+
             if (doctor.getAppointments() == null) {
-                CommonToasts.databasePatientError(DoctorDashboardActivity.this);
                 return;
             }
 
@@ -87,20 +82,45 @@ public class DoctorDashboardActivity extends AppCompatActivity {
                         return;
                     }
 
-                    upcomingAppointments.add(appointment);
-                    adapterRecyclerUpcomingAppointments.notifyItemInserted(upcomingAppointments.size() - 1);
+                    LocalDateTime now = LocalDateTime.now();
+                    LocalDateTime appointmentDate = dateConverter.longToDate(appointment.getDate());
 
+                    if (appointmentDate.isBefore(now)) {
+                        pastAppointments.add(appointment);
+                    } else {
+                        visibleAppointments.add(appointment);
+                        upcomingAppointments.add(appointment);
+                        adapterRecyclerAppointments.notifyItemInserted(visibleAppointments.size() - 1);
+                        txtRecyclerMessage.setText(filledRecyclerMessage);
+                    }
                 });
             }
         });
-
     }
 
     private void setAppointmentsAdapter() {
-        adapterRecyclerUpcomingAppointments = new AdapterRecyclerAppointments(upcomingAppointments, new FormatDoctorsAppointment(), true);
-        recyclerUpcomingAppointments.setAdapter(adapterRecyclerUpcomingAppointments);
-        recyclerUpcomingAppointments.setItemAnimator(new DefaultItemAnimator());
-        recyclerUpcomingAppointments.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        adapterRecyclerAppointments = new AdapterRecyclerAppointments(visibleAppointments, new FormatDoctorsAppointment(), true);
+        recyclerAppointments.setAdapter(adapterRecyclerAppointments);
+        recyclerAppointments.setItemAnimator(new DefaultItemAnimator());
+        recyclerAppointments.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    public void togglePast(View view) {
+        visibleAppointments.clear();
+        visibleAppointments.addAll(btnTogglePast.isChecked() ? pastAppointments : upcomingAppointments);
+        txtRecyclerMessage.setText(visibleAppointments.size() == 0 ? emptyRecyclerMessage : filledRecyclerMessage);
+        adapterRecyclerAppointments.notifyDataSetChanged();
+    }
+
+    public void transferToSchedule() {
+        btnViewSchedule = findViewById(R.id.btnViewSchedule);
+        btnViewSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DoctorDashboardActivity.this, DoctorTimeSlotActivity.class);
+                intent.putExtra(KEY_DOCTOR, doctorUsername);
+                startActivity(intent);
+            }
+        });
     }
 }
-
