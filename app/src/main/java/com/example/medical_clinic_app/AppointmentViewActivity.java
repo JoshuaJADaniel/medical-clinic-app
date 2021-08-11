@@ -20,33 +20,31 @@ public class AppointmentViewActivity extends AppCompatActivity {
     public static final String KEY_IS_DOCTOR = "KEY_IS_DOCTOR";
     public static final String KEY_DOCTOR = "KEY_DOCTOR";
 
-    private Toolbar toolbar;
-
-    private String doctorUsername;
-    private String patientUsername;
-    private long appointmentTime;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment_view);
 
-        toolbar = findViewById(R.id.toolbarAppointment);
+        Toolbar toolbar = findViewById(R.id.toolbarAppointment);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
 
         Intent intent = getIntent();
-        doctorUsername = intent.getStringExtra(KEY_DOCTOR);
-        patientUsername = intent.getStringExtra(KEY_PATIENT);
-        appointmentTime = intent.getLongExtra(KEY_TIME, 0);
+        populatePatient(intent.getStringExtra(KEY_PATIENT));
+        populateDoctor(intent.getStringExtra(KEY_DOCTOR));
+        populateTime(intent.getLongExtra(KEY_TIME, 0));
 
-        if (!intent.getBooleanExtra(KEY_IS_DOCTOR, false)) {
-            Button btnPastDoctors = findViewById(R.id.btnPastDoctors);
+        Button btnPastDoctors = findViewById(R.id.btnPastDoctors);
+        if (intent.getBooleanExtra(KEY_IS_DOCTOR, false)) {
+            btnPastDoctors.setOnClickListener(view -> {
+                Intent nextIntent = new Intent(AppointmentViewActivity.this, PatientPastDoctorsActivity.class);
+                nextIntent.putExtra(PatientPastDoctorsActivity.KEY_PATIENT, intent.getStringExtra(KEY_PATIENT));
+                startActivity(nextIntent);
+            });
+        } else {
             btnPastDoctors.setVisibility(View.GONE);
         }
-
-        initializeToolbar();
-        populatePatient();
-        populateDoctor();
-        populateTime();
     }
 
     @Override
@@ -55,26 +53,14 @@ public class AppointmentViewActivity extends AppCompatActivity {
         return true;
     }
 
-    public void initializeToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
-    }
-
-    public void viewPastDoctors(View view) {
-        Intent nextIntent = new Intent(AppointmentViewActivity.this, PatientPastDoctorsActivity.class);
-        nextIntent.putExtra(PatientPastDoctorsActivity.KEY_PATIENT, patientUsername);
-        startActivity(nextIntent);
-    }
-
-    private void populatePatient() {
+    private void populatePatient(String username) {
         ClinicDao dao = new ClinicFirebaseDao();
         TextView txtPatientName = findViewById(R.id.txtPatientName);
         TextView txtPatientGender = findViewById(R.id.txtPatientGender);
         TextView txtPatientDob = findViewById(R.id.txtPatientDob);
         DateConverter dateConverter = dao.defaultDateConverter();
 
-        dao.getPatient(patientUsername, patient -> {
+        dao.getPatient(username, patient -> {
             if (patient == null) {
                 CommonToasts.databasePatientError(AppointmentViewActivity.this);
             } else {
@@ -85,14 +71,14 @@ public class AppointmentViewActivity extends AppCompatActivity {
         });
     }
 
-    private void populateDoctor() {
+    private void populateDoctor(String username) {
         ClinicDao dao = new ClinicFirebaseDao();
         TextView txtDoctorName = findViewById(R.id.txtDoctorName);
         TextView txtDoctorGender = findViewById(R.id.txtDoctorGender);
         TextView txtDoctorSpecialization = findViewById(R.id.txtDoctorSpecialization);
         TextView txtDoctorStatus = findViewById(R.id.txtDoctorStatus);
 
-        dao.getDoctor(doctorUsername, doctor -> {
+        dao.getDoctor(username, doctor -> {
             if (doctor == null) {
                 CommonToasts.databaseDoctorError(AppointmentViewActivity.this);
             } else {
@@ -104,13 +90,14 @@ public class AppointmentViewActivity extends AppCompatActivity {
         });
     }
 
-    private void populateTime() {
+    private void populateTime(long time) {
         ClinicDao dao = new ClinicFirebaseDao();
         TextView txtDate = findViewById(R.id.txtDate);
         DateConverter dateConverter = dao.defaultDateConverter();
-        txtDate.setText(String.format("%s at %s",
-                dateConverter.getFormattedDate(appointmentTime),
-                dateConverter.getFormattedTime(appointmentTime)
+        txtDate.setText(String.format("%s at %s %s",
+                dateConverter.getFormattedDate(time),
+                dateConverter.getFormattedTime(time),
+                dateConverter.getLocale()
         ));
     }
 }

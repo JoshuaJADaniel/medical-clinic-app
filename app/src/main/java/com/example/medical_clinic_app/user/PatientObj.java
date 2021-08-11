@@ -1,6 +1,5 @@
 package com.example.medical_clinic_app.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PatientObj implements Patient {
@@ -61,7 +60,6 @@ public class PatientObj implements Patient {
 
     @Override
     public void addToAppointments(String id) {
-        if (appointments == null) appointments = new ArrayList<>();
         appointments.add(id);
     }
 

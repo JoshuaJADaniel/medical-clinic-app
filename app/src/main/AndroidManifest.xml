@@ -10,9 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Medicalclinicapp">
         <activity
-            android:name=".DoctorViewDayTimeSlot"
-            android:exported="true" />
-        <activity
             android:name=".DoctorTimeSlotActivity"
             android:exported="true" />
         <activity
