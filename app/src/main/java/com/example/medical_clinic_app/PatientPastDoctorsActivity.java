@@ -1,14 +1,12 @@
 package com.example.medical_clinic_app;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.medical_clinic_app.adapters.AdapterRecyclerDoctorsAvailable;
 import com.example.medical_clinic_app.services.ClinicDao;
@@ -27,10 +25,8 @@ public class PatientPastDoctorsActivity extends AppCompatActivity {
     public static final String KEY_PATIENT = "KEY_PATIENT";
 
     private String patientUsername;
-    private final List<Doctor> pastDoctors = new ArrayList<>();
+    private List<Doctor> pastDoctors;
 
-    private Toolbar toolbar;
-    private TextView txtNoPastDoctors;
     private RecyclerView recyclerDoctorList;
     private AdapterRecyclerDoctorsAvailable adapterDoctorList;
 
@@ -41,26 +37,12 @@ public class PatientPastDoctorsActivity extends AppCompatActivity {
 
         patientUsername = getIntent().getStringExtra(KEY_PATIENT);
 
-        toolbar = findViewById(R.id.toolbarPastDoctors);
-        txtNoPastDoctors = findViewById(R.id.txtNoPastDoctors);
         recyclerDoctorList = findViewById(R.id.recyclerPastDoctors);
-        recyclerDoctorList.setVisibility(View.INVISIBLE);
+        recyclerDoctorList.setVisibility(View.VISIBLE);
 
-        initializeToolbar();
+        pastDoctors = new ArrayList<>();
         setupDoctorAdapter();
         setupPastDoctors();
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    private void initializeToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
     }
 
     private void setupDoctorAdapter() {
@@ -72,8 +54,8 @@ public class PatientPastDoctorsActivity extends AppCompatActivity {
     }
 
     private void setupPastDoctors() {
-        ClinicDao dao = new ClinicFirebaseDao();
         Set<String> addedDoctors = new HashSet<>();
+        ClinicDao dao = new ClinicFirebaseDao();
         DateConverter dateConverter = dao.defaultDateConverter();
         dao.getPatient(patientUsername, patient -> {
             if (patient == null) {
@@ -95,8 +77,6 @@ public class PatientPastDoctorsActivity extends AppCompatActivity {
                                 pastDoctors.add(doctor);
                                 adapterDoctorList.notifyItemInserted(pastDoctors.size() - 1);
                                 addedDoctors.add(doctor.getUsername());
-                                recyclerDoctorList.setVisibility(View.VISIBLE);
-                                txtNoPastDoctors.setVisibility(View.INVISIBLE);
                             }
                         });
                     }
