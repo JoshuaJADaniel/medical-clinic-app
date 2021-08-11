@@ -15,7 +15,6 @@ import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.user.Doctor;
 import com.example.medical_clinic_app.user.DoctorObj;
-import com.example.medical_clinic_app.user.DoctorSpecializations;
 import com.example.medical_clinic_app.user.UserGenders;
 import com.example.medical_clinic_app.utils.CommonToasts;
 
@@ -64,7 +63,7 @@ public class DoctorSignupActivity extends AppCompatActivity {
 
     private void initializeSpinners() {
         List<String> genders = new ArrayList<>(UserGenders.getGenders());
-        List<String> specializations = new ArrayList<>(DoctorSpecializations.getSpecializations());
+        List<String> specializations = new ArrayList<>(Doctor.SPECIALIZATIONS);
 
         ArrayAdapter<String> specializationsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, specializations);
         specializationsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -16,6 +16,7 @@ import com.example.medical_clinic_app.appointment.GeneralAppointment;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
+import com.example.medical_clinic_app.user.Doctor;
 import com.example.medical_clinic_app.utils.CommonToasts;
 
 import java.time.LocalDateTime;
@@ -31,9 +32,6 @@ public class SelectTimeslotActivity extends AppCompatActivity {
 
     private String patientUsername;
     private String doctorUsername;
-
-    private final int minWorkHour = 9;
-    private final int maxWorkHour = 17;
 
     private final LocalDateTime now = LocalDateTime.now();
     private final ClinicDao dao = new ClinicFirebaseDao();
@@ -78,7 +76,7 @@ public class SelectTimeslotActivity extends AppCompatActivity {
         radioGroupLeft.clearCheck();
         selectedHour = null;
 
-        for (int hour = minWorkHour; hour < maxWorkHour; hour++) {
+        for (int hour = Doctor.MIN_WORK_HOUR; hour < Doctor.MAX_WORK_HOUR; hour++) {
             Objects.requireNonNull(hoursToButtons.get(hour)).setEnabled(true);
         }
 
@@ -90,7 +88,7 @@ public class SelectTimeslotActivity extends AppCompatActivity {
         }
 
         if (onSameDate(selectedDate, now)) {
-            for (int hour = minWorkHour; hour < maxWorkHour; hour++) {
+            for (int hour = Doctor.MIN_WORK_HOUR; hour < Doctor.MAX_WORK_HOUR; hour++) {
                 if (hour <= now.getHour()) {
                     Objects.requireNonNull(hoursToButtons.get(hour)).setEnabled(false);
                 }
@@ -130,8 +128,8 @@ public class SelectTimeslotActivity extends AppCompatActivity {
 
     @SuppressLint("DefaultLocale")
     private void initializeRadioGroups() {
-        int centerHour = (minWorkHour + maxWorkHour) / 2;
-        for (int hour = minWorkHour; hour < maxWorkHour; hour++) {
+        int centerHour = (Doctor.MIN_WORK_HOUR + Doctor.MAX_WORK_HOUR) / 2;
+        for (int hour = Doctor.MIN_WORK_HOUR; hour < Doctor.MAX_WORK_HOUR; hour++) {
             RadioButton radioButton = new RadioButton(this);
             radioButton.setText(String.format("%02d:00", hour));
             radioButton.setTag(hour);

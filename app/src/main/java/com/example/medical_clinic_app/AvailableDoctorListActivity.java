@@ -27,7 +27,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
-import com.example.medical_clinic_app.user.DoctorSpecializations;
 import com.example.medical_clinic_app.user.UserGenders;
 import com.example.medical_clinic_app.utils.CommonToasts;
 import com.google.firebase.database.DataSnapshot;
@@ -95,7 +94,7 @@ public class AvailableDoctorListActivity extends AppCompatActivity {
 
     private void initializeSpinners() {
         List<String> genders = new ArrayList<>(UserGenders.getGenders());
-        List<String> specializations = new ArrayList<>(DoctorSpecializations.getSpecializations());
+        List<String> specializations = new ArrayList<>(Doctor.SPECIALIZATIONS);
 
         genders.add(0, genderPrompt);
         specializations.add(0, specializationPrompt);
