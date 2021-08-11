@@ -16,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class ClinicFirebaseDao implements ClinicDao {
     private static final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private static final DatabaseReference doctorsRef = db.getReference("doctors");
@@ -89,24 +91,26 @@ public class ClinicFirebaseDao implements ClinicDao {
     }
 
     @Override
-    public boolean addAppointment(Appointment appointment) {
-        try {
-            getPatient(appointment.getPatient(), patient -> {
-                getDoctor(appointment.getDoctor(), doctor -> {
-                    DatabaseReference newRef = appointmentsRef.push();
-                    String appointmentId = newRef.getKey();
-                    newRef.setValue(appointment);
+    public void addAppointment(Appointment appointment, AppointmentListener listener) {
+        getPatient(appointment.getPatient(), patient -> {
+            getDoctor(appointment.getDoctor(), doctor -> {
+                if (patient == null || doctor == null) {
+                    listener.callback(null);
+                    return;
+                }
 
-                    doctor.addToAppointments(appointmentId);
-                    patient.addToAppointments(appointmentId);
-                    doctorsRef.child(doctor.getUsername()).setValue(doctor);
-                    patientsRef.child(patient.getUsername()).setValue(patient);
-                });
+                DatabaseReference newRef = appointmentsRef.push();
+                String appointmentId = newRef.getKey();
+                newRef.setValue(appointment);
+
+                doctor.addToAppointments(appointmentId);
+                patient.addToAppointments(appointmentId);
+                doctorsRef.child(doctor.getUsername()).setValue(doctor);
+                patientsRef.child(patient.getUsername()).setValue(patient);
+
+                listener.callback(appointment);
             });
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        });
     }
 
     @Override

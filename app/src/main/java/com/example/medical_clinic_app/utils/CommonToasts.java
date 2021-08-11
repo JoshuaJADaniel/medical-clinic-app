@@ -43,4 +43,16 @@ public class CommonToasts {
     public static void invalidDateEntered(Context context) {
         Toast.makeText(context, "Please enter a valid date!", Toast.LENGTH_LONG).show();
     }
+
+    public static void unselectedAppointmentTime(Context context) {
+        Toast.makeText(context, "Please select both an appointment date and time!", Toast.LENGTH_LONG).show();
+    }
+
+    public static void appointmentBookingError(Context context) {
+        Toast.makeText(context, "Unable to book the appointment! Please try again later.", Toast.LENGTH_LONG).show();
+    }
+
+    public static void appointmentSuccess(Context context) {
+        Toast.makeText(context, "Successfully booked appointment!", Toast.LENGTH_LONG).show();
+    }
 }
