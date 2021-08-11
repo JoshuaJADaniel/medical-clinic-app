@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.medical_clinic_app.adapters.AdapterRecyclerAppointments;
@@ -110,7 +109,9 @@ public class DoctorDashboardActivity extends AppCompatActivity {
     }
 
     public void transferToSchedule(View view) {
-        Toast.makeText(this, "Needs to be implemented soon", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, DoctorScheduleActivity.class);
+        intent.putExtra(DoctorScheduleActivity.KEY_DOCTOR, doctorUsername);
+        startActivity(intent);
     }
 }
 
