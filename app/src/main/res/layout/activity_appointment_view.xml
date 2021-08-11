@@ -142,6 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
+            android:onClick="viewPastDoctors"
             android:text="View Past Doctors" />
 
         <LinearLayout

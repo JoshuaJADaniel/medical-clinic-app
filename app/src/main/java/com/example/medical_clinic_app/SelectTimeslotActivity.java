@@ -1,6 +1,7 @@
 package com.example.medical_clinic_app;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -15,10 +16,14 @@ import com.example.medical_clinic_app.appointment.GeneralAppointment;
 import com.example.medical_clinic_app.services.ClinicDao;
 import com.example.medical_clinic_app.services.ClinicFirebaseDao;
 import com.example.medical_clinic_app.time.DateConverter;
+import com.example.medical_clinic_app.utils.CommonToasts;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class SelectTimeslotActivity extends AppCompatActivity {
     public static final String KEY_PATIENT = "KEY_PATIENT";
@@ -27,10 +32,19 @@ public class SelectTimeslotActivity extends AppCompatActivity {
     private String patientUsername;
     private String doctorUsername;
 
+    private final int minWorkHour = 9;
+    private final int maxWorkHour = 17;
+
+    private final LocalDateTime now = LocalDateTime.now();
+    private final ClinicDao dao = new ClinicFirebaseDao();
+    private final DateConverter dateConverter = dao.defaultDateConverter();
+
     private Integer selectedHour;
     private LocalDateTime selectedDate;
-    private Map<Integer, RadioButton> hoursToButtons;
+    private final List<Appointment> appointmentList = new ArrayList<>();
+    private final Map<Integer, RadioButton> hoursToButtons = new HashMap<>();
 
+    private Toolbar toolbar;
     private RadioGroup radioGroupLeft;
     private RadioGroup radioGroupRight;
 
@@ -58,39 +72,110 @@ public class SelectTimeslotActivity extends AppCompatActivity {
         }
     };
 
+    private final CalendarView.OnDateChangeListener dateChangeListener = (calendarView, year, month, day) -> {
+        selectedDate = LocalDateTime.of(year, month + 1, day, 0, 0);
+        radioGroupRight.clearCheck();
+        radioGroupLeft.clearCheck();
+        selectedHour = null;
+
+        for (int hour = minWorkHour; hour < maxWorkHour; hour++) {
+            Objects.requireNonNull(hoursToButtons.get(hour)).setEnabled(true);
+        }
+
+        for (Appointment appointment : appointmentList) {
+            LocalDateTime appointmentDate = dateConverter.longToDate(appointment.getDate());
+            if (onSameDate(appointmentDate, selectedDate)) {
+                Objects.requireNonNull(hoursToButtons.get(appointmentDate.getHour())).setEnabled(false);
+            }
+        }
+
+        if (onSameDate(selectedDate, now)) {
+            for (int hour = minWorkHour; hour < maxWorkHour; hour++) {
+                if (hour <= now.getHour()) {
+                    Objects.requireNonNull(hoursToButtons.get(hour)).setEnabled(false);
+                }
+            }
+        }
+    };
+
     @Override
-    @SuppressLint("DefaultLocale")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_timeslot);
 
         Intent intent = getIntent();
-        patientUsername = intent.getStringExtra(KEY_PATIENT);
         doctorUsername = intent.getStringExtra(KEY_DOCTOR);
+        patientUsername = intent.getStringExtra(KEY_PATIENT);
 
-        hoursToButtons = new HashMap<>();
-        ClinicDao dao = new ClinicFirebaseDao();
-        DateConverter dateConverter = dao.defaultDateConverter();
-
+        toolbar = findViewById(R.id.toolbarSelectTimeslot);
         radioGroupLeft = findViewById(R.id.radioGroupLeft);
         radioGroupRight = findViewById(R.id.radioGroupRight);
 
-        int minHour = 9, maxHour = 17, centerHour = (minHour + maxHour) / 2;
-        for (int hour = minHour; hour < maxHour; hour++) {
+        initializeToolbar();
+        initializeRadioGroups();
+        initializeAppointments();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    private void initializeToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_chevron);
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void initializeRadioGroups() {
+        int centerHour = (minWorkHour + maxWorkHour) / 2;
+        for (int hour = minWorkHour; hour < maxWorkHour; hour++) {
             RadioButton radioButton = new RadioButton(this);
-            radioButton.setText(String.format("%02d:00 %s", hour, dateConverter.getLocale()));
-            (hour < centerHour ? radioGroupLeft : radioGroupRight).addView(radioButton);
+            radioButton.setText(String.format("%02d:00", hour));
             radioButton.setTag(hour);
+
+            (hour < centerHour ? radioGroupLeft : radioGroupRight).addView(radioButton);
+            if (hour <= now.getHour()) radioButton.setEnabled(false);
+            hoursToButtons.put(hour, radioButton);
         }
 
         radioGroupLeft.setOnCheckedChangeListener(listenerLeft);
         radioGroupRight.setOnCheckedChangeListener(listenerRight);
 
+        long millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
         CalendarView calendar = findViewById(R.id.calendarDays);
+        calendar.setMaxDate(System.currentTimeMillis() + millisecondsPerWeek);
         calendar.setMinDate(System.currentTimeMillis());
-        calendar.setMaxDate(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000);
-        calendar.setOnDateChangeListener((calendarView, year, month, day) -> {
-            selectedDate = LocalDateTime.of(year, month + 1, day, 0, 0);
+        calendar.setOnDateChangeListener(dateChangeListener);
+    }
+
+    private void initializeAppointments() {
+        dao.getDoctor(doctorUsername, doctor -> {
+            if (doctor == null) {
+                CommonToasts.databaseDoctorError(SelectTimeslotActivity.this);
+                return;
+            }
+
+            if (doctor.getAppointments() == null) {
+                return;
+            }
+
+            for (String id : doctor.getAppointments()) {
+                dao.getAppointment(id, appointment -> {
+                    if (appointment == null) {
+                        CommonToasts.databaseAppointmentError(SelectTimeslotActivity.this);
+                        return;
+                    }
+
+                    appointmentList.add(appointment);
+                    LocalDateTime appointmentDate = dateConverter.longToDate(appointment.getDate());
+                    if (onSameDate(appointmentDate, now)) {
+                        Objects.requireNonNull(hoursToButtons.get(appointmentDate.getHour())).setEnabled(false);
+                    }
+                });
+            }
         });
     }
 
@@ -101,6 +186,7 @@ public class SelectTimeslotActivity extends AppCompatActivity {
 
     public void bookAppointment(View view) {
         if (selectedDate == null || selectedHour == null) {
+            CommonToasts.unselectedAppointmentTime(this);
             return;
         }
 
@@ -113,13 +199,27 @@ public class SelectTimeslotActivity extends AppCompatActivity {
                 0
         );
 
-        ClinicDao dao = new ClinicFirebaseDao();
-        DateConverter dateConverter = dao.defaultDateConverter();
         Appointment appointment = new GeneralAppointment(
                 dateConverter.dateToLong(selectedDateAndTime),
                 patientUsername,
                 doctorUsername
         );
-        dao.addAppointment(appointment);
+
+        dao.addAppointment(appointment, returnedAppointment -> {
+            if (returnedAppointment == null) {
+                CommonToasts.appointmentBookingError(SelectTimeslotActivity.this);
+            } else {
+                CommonToasts.appointmentSuccess(SelectTimeslotActivity.this);
+                Intent intent = new Intent(SelectTimeslotActivity.this, PatientDashboardActivity.class);
+                intent.putExtra(PatientDashboardActivity.KEY_PATIENT, patientUsername);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private boolean onSameDate(LocalDateTime date1, LocalDateTime date2) {
+        return (date1.getYear() == date2.getYear() &&
+                date1.getMonthValue() == date2.getMonthValue() &&
+                date1.getDayOfMonth() == date2.getDayOfMonth());
     }
 }

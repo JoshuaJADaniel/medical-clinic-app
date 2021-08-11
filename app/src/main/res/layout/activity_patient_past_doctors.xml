@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Previous Doctors"
+        app:title="Past Doctors"
         app:titleTextColor="@color/white" />
 
     <TextView
@@ -30,6 +30,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarPastDoctors" />
 
+    <TextView
+        android:id="@+id/txtNoPastDoctors"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="You have not seen any doctors!"
+        app:layout_constraintStart_toStartOf="@+id/recyclerPastDoctors"
+        app:layout_constraintTop_toTopOf="@+id/recyclerPastDoctors" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerPastDoctors"
         android:layout_width="0dp"
@@ -41,5 +49,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPastDoctorsTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/txtPastDoctorsTitle">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
